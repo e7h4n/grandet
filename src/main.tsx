@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import App from './App.tsx';
 import './index.css';
 import { createStore, StoreProvider } from 'rippling';
+import { beginAutoRefreshEffect } from './atoms/preference.ts';
 
 async function prepare() {
   if (import.meta.env.DEV) {
@@ -20,6 +21,8 @@ void prepare().then(() => {
   }
 
   const store = createStore();
+  store.set(beginAutoRefreshEffect);
+
   createRoot(document.getElementById('root')!).render(
     <StrictMode>
       <StoreProvider value={store}>

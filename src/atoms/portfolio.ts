@@ -1,7 +1,13 @@
-import { $computed, $effect } from 'rippling';
+import { $computed, $effect, $value } from 'rippling';
 import * as echarts from 'echarts';
 import { sessionHeadersAtom } from './auth';
 import { apiHostAtom } from './api';
+
+const refreshAtom = $value(0);
+
+export const refreshEffect = $effect((_, set) => {
+  set(refreshAtom, (x) => x + 1);
+});
 
 export const navIndex = $computed(async (get) => {
   const headers = await get(sessionHeadersAtom);
@@ -27,6 +33,8 @@ export const cashFlows = $computed<
     }[]
   >
 >(async (get) => {
+  get(refreshAtom);
+
   const headers = await get(sessionHeadersAtom);
   const apiHost = get(apiHostAtom);
   const resp = await fetch(apiHost + '/portfolio/cash_flows' + window.location.search, { headers });
@@ -55,6 +63,8 @@ export const cashFlows = $computed<
 });
 
 export const investments = $computed(async (get) => {
+  get(refreshAtom);
+
   const headers = await get(sessionHeadersAtom);
   const apiHost = get(apiHostAtom);
   return fetch(apiHost + '/portfolio/investments' + window.location.search, {
@@ -63,6 +73,8 @@ export const investments = $computed(async (get) => {
 });
 
 export const pnl = $computed(async (get) => {
+  get(refreshAtom);
+
   const headers = await get(sessionHeadersAtom);
   const apiHost = get(apiHostAtom);
   const resp = await fetch(apiHost + '/portfolio/pnl' + window.location.search, { headers });
@@ -78,6 +90,8 @@ export const pnl = $computed(async (get) => {
 });
 
 export const calendarReturns = $computed(async (get) => {
+  get(refreshAtom);
+
   const headers = await get(sessionHeadersAtom);
   const apiHost = get(apiHostAtom);
   const resp = await fetch(apiHost + '/portfolio/calendar_returns' + window.location.search, { headers });
@@ -88,6 +102,8 @@ export const calendarReturns = $computed(async (get) => {
 });
 
 export const cumulativeReturns = $computed(async (get) => {
+  get(refreshAtom);
+
   const headers = await get(sessionHeadersAtom);
   const apiHost = get(apiHostAtom);
   return fetch(apiHost + '/portfolio/cumulative_returns' + window.location.search, { headers }).then((res) =>
@@ -96,6 +112,8 @@ export const cumulativeReturns = $computed(async (get) => {
 });
 
 export const irrSummary = $computed(async (get) => {
+  get(refreshAtom);
+
   const headers = await get(sessionHeadersAtom);
   const apiHost = get(apiHostAtom);
   return fetch(apiHost + '/portfolio/irr_summary' + window.location.search, {

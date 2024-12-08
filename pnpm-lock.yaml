@@ -44,6 +44,9 @@ importers:
       rippling:
         specifier: ^0.3.0
         version: 0.3.0(@types/react@18.3.14)(react@18.3.1)
+      signal-timers:
+        specifier: ^1.0.4
+        version: 1.0.4
     devDependencies:
       '@corbado/types':
         specifier: ^2.11.2
@@ -2711,6 +2714,10 @@ packages:
   signal-exit@4.1.0:
     resolution: {integrity: sha512-bzyZ1e88w9O1iNJbKnOlvYTrWPDl46O1bG0D3XInv+9tkPrxrN8jUUTiFlDkkmKWgn1M6CfIA13SuGqOa9Korw==}
     engines: {node: '>=14'}
+
+  signal-timers@1.0.4:
+    resolution: {integrity: sha512-aIqj6BTlnA2G48GTfTFqkEn5MJBtfx4bHCjqzdRLdkhvCRhH8kEDFsX6yUbX0qYXLvV4bI1PRgAw+C9DrgskGg==}
+    engines: {node: '>=10'}
 
   slash@3.0.0:
     resolution: {integrity: sha512-g9Q1haeby36OSStwb4ntCGGGaKsaVSjQ68fBxoQcutl5fS1vuY18H3wSt3jFyFtrkx+Kz0V1G85A4MyAdDMi2Q==}
@@ -5891,6 +5898,8 @@ snapshots:
   signal-exit@3.0.7: {}
 
   signal-exit@4.1.0: {}
+
+  signal-timers@1.0.4: {}
 
   slash@3.0.0: {}
 

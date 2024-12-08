@@ -7,7 +7,12 @@ import { $effect, $value, useGet, useLoadable, useSet } from 'rippling';
 import { authedAtom, logoutEffect, userAtom } from '../atoms/auth';
 import { Avatar, FormControlLabel, Menu, MenuItem, Switch, Tooltip } from '@mui/material';
 import React, { HTMLAttributes } from 'react';
-import { setShowDetailNumberEffect, showDetailNumberAtom } from '../atoms/preference';
+import {
+  autoRefreshAtom,
+  setShowDetailNumberEffect,
+  showDetailNumberAtom,
+  updateAutoRefreshEffect,
+} from '../atoms/preference';
 
 const anchorElUserAtom = $value<null | HTMLElement>(null);
 const handleOpenUserMenuEffect = $effect((_, set, event: React.MouseEvent<HTMLElement>) => {
@@ -26,6 +31,8 @@ function UserBox() {
   const _authed = useLoadable(authedAtom);
   const showDetailNumber = useGet(showDetailNumberAtom);
   const updateShowDetailNumber = useSet(setShowDetailNumberEffect);
+  const autoRefresh = useGet(autoRefreshAtom);
+  const updateAutoRefresh = useSet(updateAutoRefreshEffect);
 
   if (_authed.state !== 'hasData' || _user.state !== 'hasData') {
     return null;
@@ -68,6 +75,12 @@ function UserBox() {
               />
             }
             label="Mask details"
+          />
+        </MenuItem>
+        <MenuItem>
+          <FormControlLabel
+            control={<Switch checked={autoRefresh} onChange={(_, checked) => updateAutoRefresh(checked)} />}
+            label="Auto refresh"
           />
         </MenuItem>
         <MenuItem onClick={logout}>
