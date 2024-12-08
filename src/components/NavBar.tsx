@@ -3,7 +3,6 @@ import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
-import MenuIcon from "@mui/icons-material/Menu";
 import { $effect, $value, useGet, useLoadable, useSet } from "rippling";
 import { authedAtom, logoutEffect, userAtom } from "../atoms/auth";
 import { Avatar, Menu, MenuItem, Tooltip } from "@mui/material";
