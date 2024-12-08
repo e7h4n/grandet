@@ -1,13 +1,14 @@
-import { useLayoutEffect, useRef, HTMLAttributes } from 'react';
-import { useSet } from 'rippling';
-import { renderNavIndex } from '../atoms/portfolio';
-import { Typography } from '@mui/material';
+import { useRef, HTMLAttributes, useEffect } from 'react';
+import { useLoadable, useSet } from 'rippling';
+import { navIndex, renderNavIndex } from '../atoms/portfolio';
+import { Skeleton, Typography } from '@mui/material';
 
 export default function NavIndexChart(props: HTMLAttributes<HTMLDivElement>) {
+  const navIndex_ = useLoadable(navIndex);
   const elemRef = useRef<HTMLDivElement>(null);
   const renderChart = useSet(renderNavIndex);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (!elemRef.current) return;
     const controller = new AbortController();
     renderChart(elemRef.current, controller.signal);
@@ -19,7 +20,18 @@ export default function NavIndexChart(props: HTMLAttributes<HTMLDivElement>) {
       <Typography variant="h5" gutterBottom>
         NAV Index
       </Typography>
-      <div {...props} ref={elemRef} />
+      {navIndex_.state === 'hasData' ? (
+        <div {...props} ref={elemRef} />
+      ) : (
+        <Skeleton
+          variant="rectangular"
+          height={300}
+          sx={{
+            borderRadius: 1,
+            transform: 'none',
+          }}
+        />
+      )}
     </>
   );
 }

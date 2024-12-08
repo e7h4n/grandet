@@ -7,12 +7,12 @@ import TableRow from '@mui/material/TableRow';
 import { useLoadable } from 'rippling';
 import { cumulativeReturns } from '../atoms/portfolio';
 import { HTMLAttributes } from 'react';
-import { Typography } from '@mui/material';
+import { Skeleton, Typography } from '@mui/material';
 
 export default function CumulativeReturns(props: HTMLAttributes<HTMLDivElement>) {
   const tableData = useLoadable(cumulativeReturns);
   if (tableData.state !== 'hasData') {
-    return <div>Loading...</div>;
+    return <Skeleton />;
   }
 
   return (

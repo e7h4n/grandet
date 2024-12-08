@@ -1,9 +1,10 @@
 import { useLayoutEffect, useRef, HTMLAttributes } from 'react';
-import { useSet } from 'rippling';
-import { renderCalendarReturns } from '../atoms/portfolio';
-import { Typography } from '@mui/material';
+import { useLoadable, useSet } from 'rippling';
+import { calendarReturns, renderCalendarReturns } from '../atoms/portfolio';
+import { Skeleton, Typography } from '@mui/material';
 
 export default function CalendarChart(props: HTMLAttributes<HTMLDivElement>) {
+  const data_ = useLoadable(calendarReturns);
   const elemRef = useRef<HTMLDivElement>(null);
   const renderChart = useSet(renderCalendarReturns);
 
@@ -19,7 +20,18 @@ export default function CalendarChart(props: HTMLAttributes<HTMLDivElement>) {
       <Typography variant="h5" gutterBottom>
         Yearly IRR
       </Typography>
-      <div {...props} ref={elemRef} />
+      {data_.state === 'hasData' ? (
+        <div {...props} ref={elemRef} />
+      ) : (
+        <Skeleton
+          variant="rectangular"
+          height={300}
+          sx={{
+            borderRadius: 1,
+            transform: 'none',
+          }}
+        />
+      )}
     </>
   );
 }

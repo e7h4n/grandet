@@ -1,10 +1,24 @@
 import { useGet, useLoadable, useSet } from 'rippling';
 import { pnl, irrSummary, navIndex } from '../atoms/portfolio';
-import { Card, CardContent, IconButton, Typography } from '@mui/material';
+import { Card, CardContent, IconButton, Skeleton, Typography } from '@mui/material';
 import Grid from '@mui/material/Grid2';
 import { setShowDetailNumberEffect, showDetailNumberAtom } from '../atoms/preference';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+
+function SkeletonCard() {
+  return (
+    <Grid size={{ xs: 6, md: 3 }}>
+      <Card>
+        <CardContent>
+          <Skeleton variant="text" sx={{ fontSize: '1.25rem' }} />
+          <Skeleton variant="text" sx={{ fontSize: '1.5rem' }} />
+          <Skeleton variant="text" sx={{ fontSize: '0.875rem' }} />
+        </CardContent>
+      </Card>
+    </Grid>
+  );
+}
 
 export default function Summary() {
   const pnl_ = useLoadable(pnl);
@@ -14,7 +28,14 @@ export default function Summary() {
   const updateShowDetailNumber = useSet(setShowDetailNumberEffect);
 
   if (pnl_.state !== 'hasData' || irrSummary_.state !== 'hasData' || navIndex_.state !== 'hasData') {
-    return <div>Loading...</div>;
+    return (
+      <Grid container spacing={2}>
+        <SkeletonCard />
+        <SkeletonCard />
+        <SkeletonCard />
+        <SkeletonCard />
+      </Grid>
+    );
   }
 
   const pnlData = pnl_.data;
