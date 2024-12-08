@@ -5,8 +5,9 @@ import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import { $effect, $value, useGet, useLoadable, useSet } from 'rippling';
 import { authedAtom, logoutEffect, userAtom } from '../atoms/auth';
-import { Avatar, Menu, MenuItem, Tooltip } from '@mui/material';
+import { Avatar, FormControlLabel, Menu, MenuItem, Switch, Tooltip } from '@mui/material';
 import React, { HTMLAttributes } from 'react';
+import { setShowDetailNumberEffect, showDetailNumberAtom } from '../atoms/preference';
 
 const anchorElUserAtom = $value<null | HTMLElement>(null);
 const handleOpenUserMenuEffect = $effect((_, set, event: React.MouseEvent<HTMLElement>) => {
@@ -23,6 +24,8 @@ function UserBox() {
   const logout = useSet(logoutEffect);
   const _user = useLoadable(userAtom);
   const _authed = useLoadable(authedAtom);
+  const showDetailNumber = useGet(showDetailNumberAtom);
+  const updateShowDetailNumber = useSet(setShowDetailNumberEffect);
 
   if (_authed.state !== 'hasData' || _user.state !== 'hasData') {
     return null;
@@ -53,6 +56,19 @@ function UserBox() {
       >
         <MenuItem disabled>
           <Typography sx={{ textAlign: 'center' }}>{_user.data?.fullName}</Typography>
+        </MenuItem>
+        <MenuItem>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={!showDetailNumber}
+                onChange={(_, checked) => {
+                  updateShowDetailNumber(!checked);
+                }}
+              />
+            }
+            label="Mask details"
+          />
         </MenuItem>
         <MenuItem onClick={logout}>
           <Typography sx={{ textAlign: 'center' }}>Logout</Typography>

@@ -1,12 +1,14 @@
-import { useLoadable } from 'rippling';
+import { useGet, useLoadable } from 'rippling';
 import { pnl, irrSummary, navIndex } from '../atoms/portfolio';
 import { Card, CardContent, Typography } from '@mui/material';
 import Grid from '@mui/material/Grid2';
+import { showDetailNumberAtom } from '../atoms/preference';
 
 export default function Summary() {
   const pnl_ = useLoadable(pnl);
   const irrSummary_ = useLoadable(irrSummary);
   const navIndex_ = useLoadable(navIndex);
+  const showDetailNumber = useGet(showDetailNumberAtom);
 
   if (pnl_.state !== 'hasData' || irrSummary_.state !== 'hasData' || navIndex_.state !== 'hasData') {
     return <div>Loading...</div>;
@@ -44,18 +46,20 @@ export default function Summary() {
 
   return (
     <Grid container spacing={2}>
-      {renderCard(
-        'Total PnL',
-        pnlData.currency +
-          ' ' +
-          total_pnl.toLocaleString(undefined, {
-            maximumFractionDigits: 0,
-          }),
-        total_pnl > 0,
-        `Including ${pnlData.currency} ${pnlData.dividendExTax.toLocaleString(undefined, {
-          maximumFractionDigits: 0,
-        })} in dividends`,
-      )}
+      {showDetailNumber
+        ? renderCard(
+            'Total PnL',
+            pnlData.currency +
+              ' ' +
+              total_pnl.toLocaleString(undefined, {
+                maximumFractionDigits: 0,
+              }),
+            total_pnl > 0,
+            `Including ${pnlData.currency} ${pnlData.dividendExTax.toLocaleString(undefined, {
+              maximumFractionDigits: 0,
+            })} in dividends`,
+          )
+        : renderCard('Total PnL', '***', total_pnl > 0, '*********')}
       {renderCard(
         'Nav Index',
         latestNavIndex[1].toFixed(2),

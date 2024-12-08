@@ -1,8 +1,9 @@
 import { HTMLAttributes } from 'react';
-import { useLoadable } from 'rippling';
+import { useGet, useLoadable } from 'rippling';
 import { investments } from '../atoms/portfolio';
 import Grid from '@mui/material/Grid2';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import { showDetailNumberAtom } from '../atoms/preference';
 
 interface Investment {
   currency: string;
@@ -16,6 +17,8 @@ function investmentName(name: string) {
 }
 
 function InvestmentList(props: HTMLAttributes<HTMLDivElement> & { investments: Investment[] }) {
+  const showDetailNumber = useGet(showDetailNumberAtom);
+
   return (
     <TableContainer {...props}>
       <Table>
@@ -33,10 +36,12 @@ function InvestmentList(props: HTMLAttributes<HTMLDivElement> & { investments: I
                 <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
                   <div style={{ flex: 1 }}>{i.currency}</div>
                   <div>
-                    {i.pnl.toLocaleString(undefined, {
-                      maximumFractionDigits: 2,
-                      minimumFractionDigits: 2,
-                    })}
+                    {showDetailNumber
+                      ? i.pnl.toLocaleString(undefined, {
+                          maximumFractionDigits: 2,
+                          minimumFractionDigits: 2,
+                        })
+                      : '***'}
                   </div>
                 </div>
               </TableCell>

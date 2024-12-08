@@ -1,7 +1,8 @@
 import { HTMLAttributes } from 'react';
-import { useLoadable } from 'rippling';
+import { useGet, useLoadable } from 'rippling';
 import { cashFlows } from '../atoms/portfolio';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import { showDetailNumberAtom } from '../atoms/preference';
 
 function investmentName(name: string) {
   const parts = name.split(':');
@@ -9,6 +10,7 @@ function investmentName(name: string) {
 }
 export default function CashFlows(props: HTMLAttributes<HTMLDivElement>) {
   const loadableCashFlows = useLoadable(cashFlows);
+  const showDetailNumber = useGet(showDetailNumberAtom);
   if (loadableCashFlows.state !== 'hasData') {
     return <div>Loading...</div>;
   }
@@ -36,10 +38,12 @@ export default function CashFlows(props: HTMLAttributes<HTMLDivElement>) {
                   <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
                     <div style={{ flex: 1 }}>{cf.amount.currency}</div>
                     <div>
-                      {cf.amount.number.toLocaleString(undefined, {
-                        maximumFractionDigits: 2,
-                        minimumFractionDigits: 2,
-                      })}
+                      {showDetailNumber
+                        ? cf.amount.number.toLocaleString(undefined, {
+                            maximumFractionDigits: 2,
+                            minimumFractionDigits: 2,
+                          })
+                        : '***'}
                     </div>
                   </div>
                 </TableCell>
