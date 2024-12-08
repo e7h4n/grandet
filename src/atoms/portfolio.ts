@@ -52,7 +52,7 @@ export const navIndexChartOptions = $computed(async (get) => {
     const lastDate = data[data.length - 1][0];
     const [year, compareMonth, compareDay] = lastDate
         .split("-")
-        .map((x) => parseInt(x, 10));
+        .map((x: string) => parseInt(x, 10));
     const compareYear = year - 3;
 
     let index = 0;
