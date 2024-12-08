@@ -107,12 +107,46 @@ export const navIndexChartOptions = $computed(async (get) => {
   const data = await get(navIndex);
 
   return {
+    backgroundColor: '#fff',
+    textStyle: {
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+    },
     xAxis: {
       type: 'time',
+      splitLine: {
+        show: true,
+        lineStyle: {
+          color: '#eee',
+          type: 'dashed',
+        },
+      },
+      axisLine: {
+        lineStyle: {
+          color: '#999',
+        },
+      },
+      axisLabel: {
+        color: '#666',
+        fontSize: 12,
+      },
     },
     yAxis: {
       type: 'value',
+      splitLine: {
+        show: true,
+        lineStyle: {
+          color: '#eee',
+          type: 'dashed',
+        },
+      },
+      axisLine: {
+        lineStyle: {
+          color: '#999',
+        },
+      },
       axisLabel: {
+        color: '#666',
+        fontSize: 12,
         formatter: function (params: number) {
           return params.toFixed(2);
         },
@@ -122,8 +156,18 @@ export const navIndexChartOptions = $computed(async (get) => {
     },
     tooltip: {
       trigger: 'axis',
+      backgroundColor: 'rgba(255, 255, 255, 0.9)',
+      borderColor: '#ccc',
+      borderWidth: 1,
+      padding: [8, 12],
+      textStyle: {
+        color: '#333',
+        fontSize: 13,
+      },
       formatter: function (params: { data: number[] }[]) {
-        return params[0].data[0] + '<br>' + params[0].data[1].toFixed(2);
+        const date = new Date(params[0].data[0]);
+        const value = params[0].data[1].toFixed(2);
+        return `${date.toLocaleDateString()}<br/>NAV: ${value}`;
       },
     },
     series: [
@@ -131,25 +175,83 @@ export const navIndexChartOptions = $computed(async (get) => {
         type: 'line',
         showSymbol: false,
         data: data,
+        lineStyle: {
+          width: 2,
+          color: '#2196f3',
+        },
+        areaStyle: {
+          color: {
+            type: 'linear',
+            x: 0,
+            y: 0,
+            x2: 0,
+            y2: 1,
+            colorStops: [
+              {
+                offset: 0,
+                color: 'rgba(33, 150, 243, 0.2)',
+              },
+              {
+                offset: 1,
+                color: 'rgba(33, 150, 243, 0)',
+              },
+            ],
+          },
+        },
+      },
+      {
+        type: 'line',
+        markLine: {
+          symbol: 'none',
+          lineStyle: {
+            color: '#999',
+            type: 'dashed',
+          },
+          data: [
+            {
+              yAxis: 1.0,
+              label: {
+                show: false,
+              },
+            },
+          ],
+        },
+        data: [],
       },
     ],
     grid: {
-      x: 60,
-      y: 20,
-      x2: 20,
-      y2: 60,
+      left: 0,
+      right: 0,
+      top: 5,
+      bottom: 5,
+      containLabel: true,
     },
+    animation: false,
   };
 });
 
 export const calendarReturnsChartOptions = $computed(async (get) => {
   const data = await get(calendarReturns);
   return {
+    backgroundColor: '#fff',
+    textStyle: {
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+    },
     xAxis: {
       type: 'category',
       axisLabel: {
         formatter: (value: string) => {
           return new Date(Date.parse(value) - 86400000).getFullYear();
+        },
+        fontSize: 12,
+        color: '#666',
+      },
+      axisTick: {
+        alignWithLabel: true,
+      },
+      axisLine: {
+        lineStyle: {
+          color: '#ccc',
         },
       },
     },
@@ -159,27 +261,56 @@ export const calendarReturnsChartOptions = $computed(async (get) => {
         formatter: function (params: number) {
           return (params * 100).toFixed(1) + '%';
         },
+        fontSize: 12,
+        color: '#666',
+      },
+      splitLine: {
+        lineStyle: {
+          type: 'dashed',
+          color: '#eee',
+        },
+      },
+      axisLine: {
+        show: false,
+      },
+      axisTick: {
+        show: false,
       },
     },
     tooltip: {
       trigger: 'axis',
+      backgroundColor: 'rgba(255,255,255,0.9)',
+      borderColor: '#ccc',
+      borderWidth: 1,
+      padding: [8, 12],
+      textStyle: {
+        color: '#333',
+        fontSize: 13,
+      },
       formatter: function (params: { data: [Date, number] }[]) {
         const d = new Date(params[0].data[0].getTime() - 24 * 60 * 60 * 1000);
-        return d.getFullYear() + '<br>' + (params[0].data[1] * 100).toFixed(1) + '%';
+        return `<div style="padding: 3px;">
+          <div style="font-size: 14px;font-weight:500;margin-bottom:4px">${d.getFullYear()}</div>
+          <div style="font-size: 13px;">IRR: ${(params[0].data[1] * 100).toFixed(1)}%</div>
+        </div>`;
       },
     },
     series: [
       {
         type: 'bar',
         data: data[0],
+        barWidth: '50%',
         itemStyle: {
           color: (params: { value: number[] }) => {
-            return params.value[1] > 0 ? '#3daf46' : '#af3d3d';
+            return params.value[1] > 0 ? 'rgba(85,182,109,0.8)' : 'rgba(209,75,75,0.8)';
           },
         },
         label: {
           show: true,
           position: 'top',
+          distance: 6,
+          color: '#666',
+          fontSize: 12,
           formatter: (params: { data: number[] }) => {
             return (params.data[1] * 100).toFixed(1) + '%';
           },
@@ -187,10 +318,11 @@ export const calendarReturnsChartOptions = $computed(async (get) => {
       },
     ],
     grid: {
-      x: 60,
-      y: 20,
-      x2: 20,
-      y2: 60,
+      left: 0,
+      right: 0,
+      top: 5,
+      bottom: 5,
+      containLabel: true,
     },
   };
 });
