@@ -1,6 +1,7 @@
 import { useLoadable } from "rippling";
 import { pnl, irrSummary, navIndex } from "../atoms/portfolio";
-import { Card, CardContent, Typography, Box } from "@mui/material";
+import { Card, CardContent, Typography } from "@mui/material";
+import Grid from "@mui/material/Grid2";
 
 export default function Summary() {
   const pnl_ = useLoadable(pnl);
@@ -17,51 +18,42 @@ export default function Summary() {
 
   const pnlData = pnl_.data;
   const irrData = irrSummary_.data;
-  const latestNavIndex = navIndex_.data[navIndex_.data.length - 1][1];
+  const latestNavIndex = navIndex_.data[navIndex_.data.length - 1];
   const total_pnl =
-    pnlData.realizedPnlExFee +
-    pnlData.unrealizedPnl +
-    pnlData.dividendExTax;
+    pnlData.realizedPnlExFee + pnlData.unrealizedPnl + pnlData.dividendExTax;
 
   const renderCard = (
     title: string,
     value: string | number,
     isPositive: boolean,
-    numberTitle?: string
+    numberTitle: string
   ) => (
-    <Card>
-      <CardContent>
-        <Typography variant="h6" component="div">
-          {title}
-        </Typography>
-        <Typography
-          variant="h5"
-          component="div"
-          sx={{
-            color: isPositive ? "success.main" : "error.main",
-            fontWeight: "bold",
-          }}
-        >
-          {value}
-        </Typography>
-        {numberTitle && (
+    <Grid size={3}>
+      <Card>
+        <CardContent>
+          <Typography variant="h6" component="div">
+            {title}
+          </Typography>
+          <Typography
+            variant="h5"
+            component="div"
+            sx={{
+              color: isPositive ? "success.main" : "error.main",
+              fontWeight: "bold",
+            }}
+          >
+            {value}
+          </Typography>
           <Typography variant="body2" color="text.secondary">
             {numberTitle}
           </Typography>
-        )}
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    </Grid>
   );
 
   return (
-    <Box
-      sx={{
-        display: "grid",
-        gridTemplateColumns: "1fr 1fr 1fr 1fr 1fr",
-        gridTemplateRows: "auto",
-        gap: "10px",
-      }}
-    >
+    <Grid container spacing={2}>
       {renderCard(
         "Total PnL",
         pnlData.currency +
@@ -70,30 +62,33 @@ export default function Summary() {
             maximumFractionDigits: 0,
           }),
         total_pnl > 0,
-        `Including ${pnlData.dividendExTax.toLocaleString(undefined, {
-          maximumFractionDigits: 0,
-        })} in dividends`
+        `Including ${pnlData.currency} ${pnlData.dividendExTax.toLocaleString(
+          undefined,
+          {
+            maximumFractionDigits: 0,
+          }
+        )} in dividends`
       )}
-      {renderCard("Nav Index", latestNavIndex.toFixed(2), latestNavIndex > 0)}
+      {renderCard(
+        "Nav Index",
+        latestNavIndex[1].toFixed(2),
+        latestNavIndex[1] > 0,
+        `Latest NAV Index in ${latestNavIndex[0].toLocaleDateString()}`
+      )}
       {renderCard(
         "Yearly Nav",
-        `${(Math.pow(latestNavIndex, 1 / irrData.years) * 100 - 100).toFixed(
+        `${(Math.pow(latestNavIndex[1], 1 / irrData.years) * 100 - 100).toFixed(
           2
         )}%`,
-        latestNavIndex > 0
+        latestNavIndex[1] > 0,
+        `Total returns over ${irrData.years.toFixed(1)} years`
       )}
       {renderCard(
         "IRR",
         `${(irrData.total_returns * 100).toFixed(2)}%`,
         irrData.total_returns > 0,
-        `Total returns over ${irrData.years.toFixed(1)} years`
+        `Include ${(irrData.div_returns * 100).toFixed(2)}% in dividends`
       )}
-      {renderCard(
-        "Dividends",
-        `${(irrData.div_returns * 100).toFixed(2)}%`,
-        irrData.div_returns > 0,
-        `Total dividends over ${irrData.years.toFixed(1)} years`
-      )}
-    </Box>
+    </Grid>
   );
 }

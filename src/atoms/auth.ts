@@ -25,7 +25,10 @@ export const showAuthPageEffect = $effect(async (get, set, elem: HTMLDivElement,
 
 export const userAtom = $computed(async (get) => {
     const corbado = await get(corbadoAtom)
-    return corbado.user
+    if (!corbado.user) {
+        return undefined
+    }
+    return (await corbado.getFullUser()).unwrap()
 })
 
 export const authedAtom = $computed(async (get) => !!(await get(userAtom)))
