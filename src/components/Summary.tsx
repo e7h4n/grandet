@@ -67,7 +67,7 @@ export default function Summary() {
         `Latest NAV Index in ${latestNavIndex[0].toLocaleDateString()}`,
       )}
       {renderCard(
-        'Yearly Nav',
+        'Yearly NAV',
         `${(Math.pow(latestNavIndex[1], 1 / irrData.years) * 100 - 100).toFixed(2)}%`,
         latestNavIndex[1] > 0,
         `Total returns over ${irrData.years.toFixed(1)} years`,
