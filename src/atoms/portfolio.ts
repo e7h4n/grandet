@@ -1,72 +1,98 @@
 import { $computed, $effect } from "rippling";
 import * as echarts from "echarts";
+import { sessionHeadersAtom } from "./auth";
+import { apiHostAtom } from "./api";
 
-const favaSession = $computed(() => {
-    return {
-        get: async (path: string) => {
-            const url = "/Portfolio/" + path
-            const res = await fetch(url)
-            return res.json()
+export const navIndex = $computed(async (get) => {
+    const headers = await get(sessionHeadersAtom);
+    const apiHost = get(apiHostAtom);
+    const resp = await fetch(apiHost + "/portfolio/nav_index" + window.location.search, { headers });
+    const data = await resp.json();
+    return data.map(([dateStr, indexStr]: [string, string]) => {
+        return [new Date(dateStr), parseFloat(indexStr)]
+    })
+});
+
+export const cashFlows = $computed<Promise<{
+    account: string;
+    amount: {
+        currency: string;
+        number: number;
+    };
+    date: Date;
+    isDividend: boolean;
+    source: string;
+}[]>>(async (get) => {
+    const headers = await get(sessionHeadersAtom);
+    const apiHost = get(apiHostAtom);
+    const resp = await fetch(apiHost + "/portfolio/cash_flows" + window.location.search, { headers });
+    const data = await resp.json();
+    return data.map(([dateStr, [amountStr, currency], isDividend, source, account]: [string, [string, string], boolean, string, string]) => {
+        const amount = parseFloat(amountStr);
+        return {
+            date: new Date(dateStr),
+            amount: {
+                number: amount,
+                currency
+            },
+            isDividend,
+            source,
+            account
         }
-    }
+    })
 });
 
-export const navIndex = $computed((get) => {
-    const api = get(favaSession);
-    return api.get("nav_index" + window.location.search);
+export const investments = $computed(async (get) => {
+    const headers = await get(sessionHeadersAtom);
+    const apiHost = get(apiHostAtom);
+    return fetch(apiHost + "/portfolio/investments" + window.location.search, { headers }).then(res => res.json());
 });
 
-export const cashFlows = $computed((get) => {
-    const api = get(favaSession);
-    return api.get("cash_flows" + window.location.search);
+export const pnl = $computed(async (get) => {
+    const headers = await get(sessionHeadersAtom);
+    const apiHost = get(apiHostAtom);
+    return fetch(apiHost + "/portfolio/pnl" + window.location.search, { headers }).then(res => res.json());
 });
 
-export const investments = $computed((get) => {
-    const api = get(favaSession);
-    return api.get("investments" + window.location.search);
+export const calendarReturns = $computed(async (get) => {
+    const headers = await get(sessionHeadersAtom);
+    const apiHost = get(apiHostAtom);
+    return fetch(apiHost + "/portfolio/calendar_returns" + window.location.search, { headers }).then(res => res.json());
 });
 
-export const pnl = $computed((get) => {
-    const api = get(favaSession);
-    return api.get("pnl" + window.location.search);
+export const cumulativeReturns = $computed(async (get) => {
+    const headers = await get(sessionHeadersAtom);
+    const apiHost = get(apiHostAtom);
+    return fetch(apiHost + "/portfolio/cumulative_returns" + window.location.search, { headers }).then(res => res.json());
 });
 
-const calendarReturns = $computed((get) => {
-    const api = get(favaSession);
-    return api.get("calendar_returns" + window.location.search);
-});
-
-export const cumulativeReturns = $computed((get) => {
-    const api = get(favaSession);
-    return api.get("cumulative_returns" + window.location.search);
-});
-
-export const irrSummary = $computed((get) => {
-    const api = get(favaSession);
-    return api.get("irr_summary" + window.location.search);
+export const irrSummary = $computed(async (get) => {
+    const headers = await get(sessionHeadersAtom);
+    const apiHost = get(apiHostAtom);
+    return fetch(apiHost + "/portfolio/irr_summary" + window.location.search, { headers }).then(res => res.json());
 });
 
 export const navIndexChartOptions = $computed(async (get) => {
     const data = await get(navIndex);
 
-    const lastDate = data[data.length - 1][0];
-    const [year, compareMonth, compareDay] = lastDate
-        .split("-")
-        .map((x: string) => parseInt(x, 10));
-    const compareYear = year - 3;
+    const lastDate: Date = data[data.length - 1][0];
+    console.log(lastDate);
+    const compareYear = lastDate.getFullYear() - 3;
 
     let index = 0;
     for (const [date] of data) {
-        const [year, month, day] = date.split("-").map((x: string) => parseInt(x, 10));
+        const year = date.getFullYear();
+        const month = date.getMonth();
+        const day = date.getDate();
         if (year > compareYear) {
             break;
         }
 
-        if (year === compareYear && month > compareMonth) {
+        if (year === compareYear && month > lastDate.getMonth()) {
             break;
         }
 
-        if (year === compareYear && month === compareMonth && day >= compareDay) {
+        if (year === compareYear && month === lastDate.getMonth() && day >= lastDate.getDate()) {
             break;
         }
 

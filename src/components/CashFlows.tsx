@@ -11,17 +11,6 @@ import {
   Typography,
 } from "@mui/material";
 
-interface CashFlow {
-  account: string;
-  amount: {
-    currency: string;
-    number: number;
-  };
-  date: string;
-  is_dividend: boolean;
-  source: string;
-}
-
 export default function CashFlows(props: HTMLAttributes<HTMLDivElement>) {
   const loadableCashFlows = useLoadable(cashFlows);
   if (loadableCashFlows.state !== "hasData") {
@@ -44,9 +33,9 @@ export default function CashFlows(props: HTMLAttributes<HTMLDivElement>) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {loadableCashFlows.data.map((cf: CashFlow, i: number) => (
+            {loadableCashFlows.data.map((cf, i) => (
               <TableRow key={i}>
-                <TableCell>{cf.date}</TableCell>
+                <TableCell>{cf.date.toLocaleDateString()}</TableCell>
                 <TableCell>
                   <div style={{ display: "flex", justifyContent: "flex-end" }}>
                     <div style={{ flex: 1 }}>{cf.amount.currency}</div>
@@ -58,7 +47,7 @@ export default function CashFlows(props: HTMLAttributes<HTMLDivElement>) {
                     </div>
                   </div>
                 </TableCell>
-                <TableCell>{cf.is_dividend ? "*" : ""}</TableCell>
+                <TableCell>{cf.isDividend ? "*" : ""}</TableCell>
                 <TableCell>{cf.account}</TableCell>
               </TableRow>
             ))}

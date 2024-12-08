@@ -26,13 +26,13 @@ export default function CumulativeReturns(
         <Table>
           <TableHead>
             <TableRow>
-              {tableData.data.header.map((header: string, i: number) => (
+              {tableData.data[0].map((header: string, i: number) => (
                 <TableCell key={i}>{header}</TableCell>
               ))}
             </TableRow>
           </TableHead>
           <TableBody>
-            {tableData.data.rows.map((row: string[], i: number) => (
+            {tableData.data[1].map((row: string[], i: number) => (
               <TableRow key={i}>
                 {row.map((cell: number | string, j: number) => (
                   <TableCell key={j}>

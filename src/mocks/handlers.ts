@@ -8,25 +8,25 @@ import pnl from './pnl.json';
 import irrSummary from './irr_summary.json';
 
 export const handlers = [
-    http.get('/Portfolio/nav_index', () => {
+    http.get('http://127.0.0.1:5000/portfolio/nav_index', () => {
         return HttpResponse.json(navIndex)
     }),
-    http.get('/Portfolio/calendar_returns', () => {
+    http.get('http://127.0.0.1:5000/portfolio/calendar_returns', () => {
         return HttpResponse.json(calendarReturns)
     }),
-    http.get('/Portfolio/cumulative_returns', () => {
+    http.get('http://127.0.0.1:5000/portfolio/cumulative_returns', () => {
         return HttpResponse.json(cumulativeReturns)
     }),
-    http.get('/Portfolio/cash_flows', () => {
+    http.get('http://127.0.0.1:5000/portfolio/cash_flows', () => {
         return HttpResponse.json(cashFlows)
     }),
-    http.get('/Portfolio/investments', () => {
+    http.get('http://127.0.0.1:5000/portfolio/investments', () => {
         return HttpResponse.json(investments)
     }),
-    http.get('/Portfolio/pnl', () => {
+    http.get('http://127.0.0.1:5000/portfolio/pnl', () => {
         return HttpResponse.json(pnl)
     }),
-    http.get('/Portfolio/irr_summary', () => {
+    http.get('http://127.0.0.1:5000/portfolio/irr_summary', () => {
         return HttpResponse.json(irrSummary)
     }),
 ]
