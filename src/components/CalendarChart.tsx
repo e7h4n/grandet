@@ -8,8 +8,10 @@ export default function CalendarChart(props: HTMLAttributes<HTMLDivElement>) {
 
   useLayoutEffect(() => {
     if (!elemRef.current) return;
-    renderChart(elemRef.current);
-  });
+    const controller = new AbortController();
+    renderChart(elemRef.current, controller.signal);
+    return () => controller.abort();
+  }, [renderChart]);
 
   return (
     <>

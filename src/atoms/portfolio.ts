@@ -80,7 +80,11 @@ export const pnl = $computed(async (get) => {
 export const calendarReturns = $computed(async (get) => {
   const headers = await get(sessionHeadersAtom);
   const apiHost = get(apiHostAtom);
-  return fetch(apiHost + '/portfolio/calendar_returns' + window.location.search, { headers }).then((res) => res.json());
+  const resp = await fetch(apiHost + '/portfolio/calendar_returns' + window.location.search, { headers });
+  const data = await resp.json();
+  return data.map((data: [string, number][]) => {
+    return data.map(([dateStr, value]) => [new Date(dateStr), value]);
+  });
 });
 
 export const cumulativeReturns = $computed(async (get) => {
@@ -101,31 +105,6 @@ export const irrSummary = $computed(async (get) => {
 
 export const navIndexChartOptions = $computed(async (get) => {
   const data = await get(navIndex);
-
-  const lastDate: Date = data[data.length - 1][0];
-  console.log(lastDate);
-  const compareYear = lastDate.getFullYear() - 3;
-
-  let index = 0;
-  for (const [date] of data) {
-    const year = date.getFullYear();
-    const month = date.getMonth();
-    const day = date.getDate();
-    if (year > compareYear) {
-      break;
-    }
-
-    if (year === compareYear && month > lastDate.getMonth()) {
-      break;
-    }
-
-    if (year === compareYear && month === lastDate.getMonth() && day >= lastDate.getDate()) {
-      break;
-    }
-
-    index++;
-  }
-  const startRatio = index / data.length;
 
   return {
     xAxis: {
@@ -160,17 +139,6 @@ export const navIndexChartOptions = $computed(async (get) => {
       x2: 20,
       y2: 60,
     },
-    dataZoom: [
-      {
-        type: 'inside',
-        start: startRatio * 100,
-        end: 100,
-      },
-      {
-        start: startRatio * 100,
-        end: 100,
-      },
-    ],
   };
 });
 
@@ -195,8 +163,9 @@ export const calendarReturnsChartOptions = $computed(async (get) => {
     },
     tooltip: {
       trigger: 'axis',
-      formatter: function (params: { data: number[] }[]) {
-        return params[0].data[0] + '<br>' + (params[0].data[1] * 100).toFixed(1) + '%';
+      formatter: function (params: { data: [Date, number] }[]) {
+        const d = new Date(params[0].data[0].getTime() - 24 * 60 * 60 * 1000);
+        return d.getFullYear() + '<br>' + (params[0].data[1] * 100).toFixed(1) + '%';
       },
     },
     series: [
@@ -226,12 +195,34 @@ export const calendarReturnsChartOptions = $computed(async (get) => {
   };
 });
 
-export const renderNavIndex = $effect(async (get, _set, elem: HTMLDivElement) => {
+export const renderNavIndex = $effect(async (get, _set, elem: HTMLDivElement, signal: AbortSignal) => {
   const options = await get(navIndexChartOptions);
-  echarts.init(elem).setOption(options);
+  const chart = echarts.init(elem);
+  signal.addEventListener('abort', () => {
+    chart.dispose();
+  });
+  window.addEventListener(
+    'resize',
+    () => {
+      chart.resize();
+    },
+    { signal },
+  );
+  chart.setOption(options);
 });
 
-export const renderCalendarReturns = $effect(async (get, _set, elem: HTMLDivElement) => {
+export const renderCalendarReturns = $effect(async (get, _set, elem: HTMLDivElement, signal: AbortSignal) => {
   const options = await get(calendarReturnsChartOptions);
-  echarts.init(elem).setOption(options);
+  const chart = echarts.init(elem);
+  signal.addEventListener('abort', () => {
+    chart.dispose();
+  });
+  window.addEventListener(
+    'resize',
+    () => {
+      chart.resize();
+    },
+    { signal },
+  );
+  chart.setOption(options);
 });
