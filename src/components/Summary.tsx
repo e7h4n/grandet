@@ -19,9 +19,9 @@ export default function Summary() {
   const irrData = irrSummary_.data;
   const latestNavIndex = navIndex_.data[navIndex_.data.length - 1][1];
   const total_pnl =
-    pnlData.realized_pnl_ex_fee +
-    pnlData.unrealized_pnl +
-    pnlData.dividend_ex_tax;
+    pnlData.realizedPnlExFee +
+    pnlData.unrealizedPnl +
+    pnlData.dividendExTax;
 
   const renderCard = (
     title: string,
@@ -70,7 +70,7 @@ export default function Summary() {
             maximumFractionDigits: 0,
           }),
         total_pnl > 0,
-        `Including ${pnlData.dividend_ex_tax.toLocaleString(undefined, {
+        `Including ${pnlData.dividendExTax.toLocaleString(undefined, {
           maximumFractionDigits: 0,
         })} in dividends`
       )}

@@ -51,7 +51,16 @@ export const investments = $computed(async (get) => {
 export const pnl = $computed(async (get) => {
     const headers = await get(sessionHeadersAtom);
     const apiHost = get(apiHostAtom);
-    return fetch(apiHost + "/portfolio/pnl" + window.location.search, { headers }).then(res => res.json());
+    const resp = await fetch(apiHost + "/portfolio/pnl" + window.location.search, { headers });
+    const data = await resp.json();
+    return {
+        currency: data.currency,
+        dividendExTax: parseFloat(data.dividend_ex_tax),
+        dividendTax: parseFloat(data.dividend_tax),
+        fee: parseFloat(data.fee),
+        realizedPnlExFee: parseFloat(data.realized_pnl_ex_fee),
+        unrealizedPnl: parseFloat(data.unrealized_pnl),
+    };
 });
 
 export const calendarReturns = $computed(async (get) => {
