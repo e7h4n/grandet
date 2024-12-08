@@ -345,10 +345,21 @@ export const calendarReturnsChartOptions = $computed(async (get) => {
   };
 });
 
-export const renderNavIndex = $effect(async (get, _set, elem: HTMLDivElement, signal: AbortSignal) => {
+const navChartAtom = $value<echarts.ECharts | undefined>(undefined);
+
+export const reloadNavChart = $effect(async (get, _set, signal: AbortSignal) => {
+  const options = await get(navIndexChartOptions);
+  signal.throwIfAborted();
+
+  get(navChartAtom)?.setOption(options);
+});
+
+export const renderNavIndex = $effect(async (get, set, elem: HTMLDivElement, signal: AbortSignal) => {
   const options = await get(navIndexChartOptions);
   const chart = echarts.init(elem);
+  set(navChartAtom, chart);
   signal.addEventListener('abort', () => {
+    set(navChartAtom, undefined);
     chart.dispose();
   });
   window.addEventListener(
@@ -361,10 +372,21 @@ export const renderNavIndex = $effect(async (get, _set, elem: HTMLDivElement, si
   chart.setOption(options);
 });
 
-export const renderCalendarReturns = $effect(async (get, _set, elem: HTMLDivElement, signal: AbortSignal) => {
+const calendarChartAtom = $value<echarts.ECharts | undefined>(undefined);
+
+export const reloadCalendarChart = $effect(async (get, _set, signal: AbortSignal) => {
+  const options = await get(calendarReturnsChartOptions);
+  signal.throwIfAborted();
+
+  get(calendarChartAtom)?.setOption(options);
+});
+
+export const renderCalendarReturns = $effect(async (get, set, elem: HTMLDivElement, signal: AbortSignal) => {
   const options = await get(calendarReturnsChartOptions);
   const chart = echarts.init(elem);
+  set(calendarChartAtom, chart);
   signal.addEventListener('abort', () => {
+    set(calendarChartAtom, undefined);
     chart.dispose();
   });
   window.addEventListener(

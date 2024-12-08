@@ -1,7 +1,7 @@
 import { $computed, $effect, $value } from 'rippling';
 import { userAtom } from './auth';
 import { interval } from 'signal-timers';
-import { refreshEffect } from './portfolio';
+import { refreshEffect, reloadCalendarChart, reloadNavChart } from './portfolio';
 const refreshAtom = $value(0);
 
 export const showDetailNumberAtom = $computed((get) => {
@@ -57,6 +57,8 @@ export const beginAutoRefreshEffect = $effect(async (get, set) => {
   interval(
     async () => {
       set(refreshEffect);
+      set(reloadNavChart, controller.signal);
+      set(reloadCalendarChart, controller.signal);
     },
     1000 * 60 * 10, // 10 minutes
     { signal: controller.signal },
