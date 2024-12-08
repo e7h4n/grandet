@@ -1,14 +1,17 @@
-import { useGet, useLoadable } from 'rippling';
+import { useGet, useLoadable, useSet } from 'rippling';
 import { pnl, irrSummary, navIndex } from '../atoms/portfolio';
-import { Card, CardContent, Typography } from '@mui/material';
+import { Card, CardContent, IconButton, Typography } from '@mui/material';
 import Grid from '@mui/material/Grid2';
-import { showDetailNumberAtom } from '../atoms/preference';
+import { setShowDetailNumberEffect, showDetailNumberAtom } from '../atoms/preference';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
 export default function Summary() {
   const pnl_ = useLoadable(pnl);
   const irrSummary_ = useLoadable(irrSummary);
   const navIndex_ = useLoadable(navIndex);
   const showDetailNumber = useGet(showDetailNumberAtom);
+  const updateShowDetailNumber = useSet(setShowDetailNumberEffect);
 
   if (pnl_.state !== 'hasData' || irrSummary_.state !== 'hasData' || navIndex_.state !== 'hasData') {
     return <div>Loading...</div>;
@@ -46,20 +49,34 @@ export default function Summary() {
 
   return (
     <Grid container spacing={2}>
-      {showDetailNumber
-        ? renderCard(
-            'Total PnL',
-            pnlData.currency +
-              ' ' +
-              total_pnl.toLocaleString(undefined, {
-                maximumFractionDigits: 0,
-              }),
-            total_pnl > 0,
-            `Including ${pnlData.currency} ${pnlData.dividendExTax.toLocaleString(undefined, {
-              maximumFractionDigits: 0,
-            })} in dividends`,
-          )
-        : renderCard('Total PnL', '***', total_pnl > 0, '*********')}
+      <Grid size={{ xs: 6, md: 3 }}>
+        <Card>
+          <CardContent>
+            <Typography variant="h6" component="div" sx={{ display: 'flex', alignItems: 'center' }}>
+              Total PnL
+              <IconButton size="small" onClick={() => updateShowDetailNumber(!showDetailNumber)} sx={{ ml: 0 }}>
+                {showDetailNumber ? <VisibilityIcon /> : <VisibilityOffIcon />}
+              </IconButton>
+            </Typography>
+            <Typography
+              variant="h5"
+              component="div"
+              sx={{
+                color: total_pnl > 0 ? 'success.main' : 'error.main',
+                fontWeight: 'bold',
+              }}
+            >
+              {pnlData.currency}{' '}
+              {showDetailNumber ? total_pnl.toLocaleString(undefined, { maximumFractionDigits: 0 }) : '***'}
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ display: { xs: 'none', md: 'block' } }}>
+              Including {pnlData.currency}{' '}
+              {showDetailNumber ? pnlData.dividendExTax.toLocaleString(undefined, { maximumFractionDigits: 0 }) : '***'}{' '}
+              in dividends
+            </Typography>
+          </CardContent>
+        </Card>
+      </Grid>
       {renderCard(
         'Nav Index',
         latestNavIndex[1].toFixed(2),
