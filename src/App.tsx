@@ -1,35 +1,21 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import CalendarChart from "./components/CalendarChart";
+import CashFlows from "./components/CashFlows";
+import CumulativeReturns from "./components/CumulativeReturns";
+import Investments from "./components/Investments";
+import NavIndexChart from "./components/NavIndexChart";
+import Summary from "./components/Summary";
 
-function App() {
-  const [count, setCount] = useState(0)
-
+export default function App() {
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+      <Summary />
+      <div style={{ display: "flex", width: "100vw", height: "300px" }}>
+        <NavIndexChart style={{ flex: 1 }} />
+        <CalendarChart style={{ flex: 1 }} />
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <CumulativeReturns />
+      <Investments />
+      <CashFlows />
     </>
-  )
+  );
 }
-
-export default App

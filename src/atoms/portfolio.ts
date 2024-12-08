@@ -1,4 +1,5 @@
-import { $computed } from "rippling/core";
+import { $computed, $effect } from "rippling";
+import * as echarts from "echarts";
 
 const favaSession = $computed(() => {
     return {
@@ -176,3 +177,13 @@ export const calendarReturnsChartOptions = $computed(async (get) => {
         },
     }
 })
+
+export const renderNavIndex = $effect(async (get, _set, elem: HTMLDivElement) => {
+    const options = await get(navIndexChartOptions);
+    echarts.init(elem).setOption(options);
+});
+
+export const renderCalendarReturns = $effect(async (get, _set, elem: HTMLDivElement) => {
+    const options = await get(calendarReturnsChartOptions);
+    echarts.init(elem).setOption(options);
+});

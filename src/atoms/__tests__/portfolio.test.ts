@@ -1,4 +1,4 @@
-import { createStore } from "rippling/core";
+import { createStore } from "rippling";
 import { expect, it } from "vitest";
 import { navIndex } from "../portfolio";
 

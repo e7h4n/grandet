@@ -2,8 +2,7 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
-import { createStore } from "rippling/core";
-import { StoreProvider } from "rippling/react";
+import { createStore, StoreProvider } from "rippling";
 
 async function prepare() {
   if (import.meta.env.DEV) {

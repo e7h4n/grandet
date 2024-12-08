@@ -1,0 +1,102 @@
+[
+    {
+        "account": "Assets:Short:Investment:CN:华夏上证50ETF",
+        "amount": {
+            "currency": "CNY",
+            "number": -1234.56
+        },
+        "date": "2024-12-01",
+        "is_dividend": false,
+        "source": "open"
+    },
+    {
+        "account": "Assets:Short:Investment:CN:华夏上证50ETF",
+        "amount": {
+            "currency": "CNY",
+            "number": 12.50
+        },
+        "date": "2024-12-05",
+        "is_dividend": true,
+        "source": "cash"
+    },
+    {
+        "account": "Assets:Short:Investment:CN:南方中证500ETF",
+        "amount": {
+            "currency": "CNY",
+            "number": -987.65
+        },
+        "date": "2024-12-06",
+        "is_dividend": false,
+        "source": "open"
+    },
+    {
+        "account": "Assets:Short:Investment:CN:易方达创业板ETF",
+        "amount": {
+            "currency": "CNY",
+            "number": -1567.89
+        },
+        "date": "2024-12-10",
+        "is_dividend": false,
+        "source": "open"
+    },
+    {
+        "account": "Assets:Short:Investment:CN:南方中证500ETF",
+        "amount": {
+            "currency": "CNY",
+            "number": 15.75
+        },
+        "date": "2024-12-15",
+        "is_dividend": true,
+        "source": "cash"
+    },
+    {
+        "account": "Assets:Short:Investment:CN:嘉实沪深300ETF",
+        "amount": {
+            "currency": "CNY",
+            "number": -2345.67
+        },
+        "date": "2024-12-20",
+        "is_dividend": false,
+        "source": "open"
+    },
+    {
+        "account": "Assets:Short:Investment:CN:易方达创业板ETF",
+        "amount": {
+            "currency": "CNY",
+            "number": 1678.90
+        },
+        "date": "2024-12-28",
+        "is_dividend": false,
+        "source": "close"
+    },
+    {
+        "account": "Assets:Short:Investment:CN:华夏上证50ETF",
+        "amount": {
+            "currency": "CNY",
+            "number": 1345.67
+        },
+        "date": "2024-12-31",
+        "is_dividend": false,
+        "source": "close"
+    },
+    {
+        "account": "Assets:Short:Investment:CN:南方中证500ETF",
+        "amount": {
+            "currency": "CNY",
+            "number": 1023.45
+        },
+        "date": "2024-12-31",
+        "is_dividend": false,
+        "source": "close"
+    },
+    {
+        "account": "Assets:Short:Investment:CN:嘉实沪深300ETF",
+        "amount": {
+            "currency": "CNY",
+            "number": 2456.78
+        },
+        "date": "2024-12-31",
+        "is_dividend": false,
+        "source": "close"
+    }
+]

@@ -1,0 +1,91 @@
+{
+  "profitable": [
+    {
+      "currency": "CNY",
+      "name": "Assets:Short:Investment:CN:华夏上证50ETF",
+      "pnl": 58234.67123
+    },
+    {
+      "currency": "USD",
+      "name": "Assets:Short:Investment:US:VTI",
+      "pnl": 4125.3245
+    },
+    {
+      "currency": "USD",
+      "name": "Assets:Short:Investment:US:QQQ",
+      "pnl": 3156.8912
+    },
+    {
+      "currency": "CNY",
+      "name": "Assets:Short:Investment:CN:南方中证500ETF",
+      "pnl": 15789.4523
+    },
+    {
+      "currency": "CNY",
+      "name": "Assets:Short:Investment:CN:易方达创业板ETF",
+      "pnl": 12345.6789
+    },
+    {
+      "currency": "CNY",
+      "name": "Assets:Short:Investment:CN:嘉实沪深300ETF",
+      "pnl": 10987.3456
+    },
+    {
+      "currency": "USD",
+      "name": "Assets:Short:Investment:US:SPY",
+      "pnl": 1234.5678
+    },
+    {
+      "currency": "USD",
+      "name": "Assets:Short:Investment:US:ARKK",
+      "pnl": 987.6543
+    },
+    {
+      "currency": "CNY",
+      "name": "Assets:Short:Investment:CN:华泰柏瑞沪深300ETF",
+      "pnl": 5432.1098
+    },
+    {
+      "currency": "CNY",
+      "name": "Assets:Short:Investment:CN:广发中证500ETF",
+      "pnl": 4321.9876
+    },
+    {
+      "currency": "CNY",
+      "name": "Assets:Short:Investment:CN:博时主题行业ETF",
+      "pnl": 876.5432
+    },
+    {
+      "currency": "CNY",
+      "name": "Assets:Short:Investment:CN:招商上证消费80ETF",
+      "pnl": 543.2109
+    }
+  ],
+  "unprofitable": [
+    {
+      "currency": "CNY",
+      "name": "Assets:Short:Investment:CN:国泰中证军工ETF",
+      "pnl": -3245.6789
+    },
+    {
+      "currency": "USD",
+      "name": "Assets:Short:Investment:US:TQQQ",
+      "pnl": -2876.5432
+    },
+    {
+      "currency": "CNY",
+      "name": "Assets:Short:Investment:CN:华宝中证医疗ETF",
+      "pnl": -1543.2109
+    },
+    {
+      "currency": "USD",
+      "name": "Assets:Short:Investment:US:SQQQ",
+      "pnl": -987.6543
+    },
+    {
+      "currency": "CNY",
+      "name": "Assets:Short:Investment:CN:富国中证银行ETF",
+      "pnl": -654.3210
+    }
+  ]
+}
