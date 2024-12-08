@@ -1,19 +1,17 @@
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import { useLoadable } from "rippling";
-import { cumulativeReturns } from "../atoms/portfolio";
-import { HTMLAttributes } from "react";
-import { Typography } from "@mui/material";
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import { useLoadable } from 'rippling';
+import { cumulativeReturns } from '../atoms/portfolio';
+import { HTMLAttributes } from 'react';
+import { Typography } from '@mui/material';
 
-export default function CumulativeReturns(
-  props: HTMLAttributes<HTMLDivElement>
-) {
+export default function CumulativeReturns(props: HTMLAttributes<HTMLDivElement>) {
   const tableData = useLoadable(cumulativeReturns);
-  if (tableData.state !== "hasData") {
+  if (tableData.state !== 'hasData') {
     return <div>Loading...</div>;
   }
 
@@ -36,9 +34,7 @@ export default function CumulativeReturns(
               <TableRow key={i}>
                 {row.map((cell: number | string, j: number) => (
                   <TableCell key={j}>
-                    {typeof cell === "number"
-                      ? String((cell * 100).toFixed(2)) + "%"
-                      : cell}
+                    {typeof cell === 'number' ? String((cell * 100).toFixed(2)) + '%' : cell}
                   </TableCell>
                 ))}
               </TableRow>

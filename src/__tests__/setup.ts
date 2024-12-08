@@ -1,14 +1,14 @@
-import { server } from '../mocks/node'
-import { beforeAll, afterAll, beforeEach } from 'vitest'
+import { server } from '../mocks/node';
+import { beforeAll, afterAll, beforeEach } from 'vitest';
 
 beforeAll(() => {
-    server.listen()
-})
+  server.listen();
+});
 
 afterAll(() => {
-    server.close()
-})
+  server.close();
+});
 
 beforeEach(() => {
-    server.resetHandlers()
-})
+  server.resetHandlers();
+});

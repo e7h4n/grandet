@@ -1,6 +1,6 @@
-import { useSet } from "rippling";
-import { showAuthPageEffect } from "../atoms/auth";
-import { useEffect, useRef } from "react";
+import { useSet } from 'rippling';
+import { showAuthPageEffect } from '../atoms/auth';
+import { useEffect, useRef } from 'react';
 
 export const AuthPage = () => {
   const elemRef = useRef<HTMLDivElement>(null);
@@ -17,10 +17,10 @@ export const AuthPage = () => {
   return (
     <div
       style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "100vh",
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '100vh',
       }}
     >
       <div ref={elemRef} />

@@ -1,16 +1,8 @@
-import { HTMLAttributes } from "react";
-import { useLoadable } from "rippling";
-import { investments } from "../atoms/portfolio";
-import Grid from "@mui/material/Grid2";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Typography,
-} from "@mui/material";
+import { HTMLAttributes } from 'react';
+import { useLoadable } from 'rippling';
+import { investments } from '../atoms/portfolio';
+import Grid from '@mui/material/Grid2';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 
 interface Investment {
   currency: string;
@@ -19,13 +11,11 @@ interface Investment {
 }
 
 function investmentName(name: string) {
-  const parts = name.split(":");
+  const parts = name.split(':');
   return parts[parts.length - 1];
 }
 
-function InvestmentList(
-  props: HTMLAttributes<HTMLDivElement> & { investments: Investment[] }
-) {
+function InvestmentList(props: HTMLAttributes<HTMLDivElement> & { investments: Investment[] }) {
   return (
     <TableContainer {...props}>
       <Table>
@@ -37,13 +27,10 @@ function InvestmentList(
         </TableHead>
         <TableBody>
           {props.investments.map((i) => (
-            <TableRow
-              key={i.name}
-              sx={{ "&:nth-of-type(odd)": { backgroundColor: "#f5f5f5" } }}
-            >
+            <TableRow key={i.name} sx={{ '&:nth-of-type(odd)': { backgroundColor: '#f5f5f5' } }}>
               <TableCell>{investmentName(i.name)}</TableCell>
               <TableCell>
-                <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
                   <div style={{ flex: 1 }}>{i.currency}</div>
                   <div>
                     {i.pnl.toLocaleString(undefined, {
@@ -63,7 +50,7 @@ function InvestmentList(
 
 export default function Investments(props: HTMLAttributes<HTMLDivElement>) {
   const loadableInvestments = useLoadable(investments);
-  if (loadableInvestments.state !== "hasData") {
+  if (loadableInvestments.state !== 'hasData') {
     return <div {...props}>Loading...</div>;
   }
   const { profitable, unprofitable } = loadableInvestments.data;

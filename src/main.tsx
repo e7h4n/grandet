@@ -1,12 +1,12 @@
-import { StrictMode } from "react";
-import { createRoot } from "react-dom/client";
-import App from "./App.tsx";
-import "./index.css";
-import { createStore, StoreProvider } from "rippling";
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import App from './App.tsx';
+import './index.css';
+import { createStore, StoreProvider } from 'rippling';
 
 async function prepare() {
   if (import.meta.env.DEV) {
-    const { worker } = await import("./mocks/browser");
+    const { worker } = await import('./mocks/browser');
     return worker.start();
   }
 
@@ -14,17 +14,17 @@ async function prepare() {
 }
 
 void prepare().then(() => {
-  const root = document.getElementById("root");
+  const root = document.getElementById('root');
   if (root === null) {
     return;
   }
 
   const store = createStore();
-  createRoot(document.getElementById("root")!).render(
+  createRoot(document.getElementById('root')!).render(
     <StrictMode>
       <StoreProvider value={store}>
         <App />
       </StoreProvider>
-    </StrictMode>
+    </StrictMode>,
   );
 });

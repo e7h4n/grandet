@@ -1,23 +1,15 @@
-import { HTMLAttributes } from "react";
-import { useLoadable } from "rippling";
-import { cashFlows } from "../atoms/portfolio";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Typography,
-} from "@mui/material";
+import { HTMLAttributes } from 'react';
+import { useLoadable } from 'rippling';
+import { cashFlows } from '../atoms/portfolio';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 
 function investmentName(name: string) {
-  const parts = name.split(":");
+  const parts = name.split(':');
   return parts[parts.length - 1];
 }
 export default function CashFlows(props: HTMLAttributes<HTMLDivElement>) {
   const loadableCashFlows = useLoadable(cashFlows);
-  if (loadableCashFlows.state !== "hasData") {
+  if (loadableCashFlows.state !== 'hasData') {
     return <div>Loading...</div>;
   }
 
@@ -41,7 +33,7 @@ export default function CashFlows(props: HTMLAttributes<HTMLDivElement>) {
               <TableRow key={i}>
                 <TableCell>{cf.date.toLocaleDateString()}</TableCell>
                 <TableCell>
-                  <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                  <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
                     <div style={{ flex: 1 }}>{cf.amount.currency}</div>
                     <div>
                       {cf.amount.number.toLocaleString(undefined, {
@@ -51,7 +43,7 @@ export default function CashFlows(props: HTMLAttributes<HTMLDivElement>) {
                     </div>
                   </div>
                 </TableCell>
-                <TableCell>{cf.isDividend ? "*" : ""}</TableCell>
+                <TableCell>{cf.isDividend ? '*' : ''}</TableCell>
                 <TableCell>{investmentName(cf.account)}</TableCell>
               </TableRow>
             ))}

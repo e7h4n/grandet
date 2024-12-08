@@ -1,6 +1,6 @@
-import { useLayoutEffect, useRef, HTMLAttributes } from "react";
-import { useSet } from "rippling";
-import { renderCalendarReturns } from "../atoms/portfolio";
+import { useLayoutEffect, useRef, HTMLAttributes } from 'react';
+import { useSet } from 'rippling';
+import { renderCalendarReturns } from '../atoms/portfolio';
 
 export default function CalendarChart(props: HTMLAttributes<HTMLDivElement>) {
   const elemRef = useRef<HTMLDivElement>(null);

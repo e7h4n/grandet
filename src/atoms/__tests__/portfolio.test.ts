@@ -1,12 +1,11 @@
-import { createStore } from "rippling";
-import { expect, it } from "vitest";
-import { navIndex } from "../portfolio";
+import { createStore } from 'rippling';
+import { expect, it } from 'vitest';
+import { navIndex } from '../portfolio';
 
 it('get nav_index', async () => {
-    const store = createStore()
+  const store = createStore();
 
-    const index = await store.get(navIndex)
+  const index = await store.get(navIndex);
 
-    expect(index).toHaveLength(1232)
-
-})
+  expect(index).toHaveLength(1232);
+});

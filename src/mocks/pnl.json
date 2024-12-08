@@ -1,8 +1,8 @@
 {
-    "currency": "CNY",
-    "dividend_ex_tax": "123.45",
-    "dividend_tax": "98.76",
-    "fee": "88.99",
-    "realized_pnl_ex_fee": "567.89",
-    "unrealized_pnl": "234.56"
+  "currency": "CNY",
+  "dividend_ex_tax": "123.45",
+  "dividend_tax": "98.76",
+  "fee": "88.99",
+  "realized_pnl_ex_fee": "567.89",
+  "unrealized_pnl": "234.56"
 }
