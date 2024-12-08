@@ -13,10 +13,10 @@ export default function Dashboard(props: HTMLAttributes<HTMLDivElement>) {
       <Grid size={12}>
         <Summary />
       </Grid>
-      <Grid size={6}>
+      <Grid size={{ xs: 12, md: 6 }}>
         <NavIndexChart style={{ height: "300px" }} />
       </Grid>
-      <Grid size={6}>
+      <Grid size={{ xs: 12, md: 6 }}>
         <CalendarChart style={{ height: "300px" }} />
       </Grid>
       <Grid size={12}>

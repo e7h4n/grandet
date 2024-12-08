@@ -1,6 +1,7 @@
 import { HTMLAttributes } from "react";
 import { useLoadable } from "rippling";
 import { investments } from "../atoms/portfolio";
+import Grid from "@mui/material/Grid2";
 import {
   Table,
   TableBody,
@@ -15,6 +16,11 @@ interface Investment {
   currency: string;
   name: string;
   pnl: number;
+}
+
+function investmentName(name: string) {
+  const parts = name.split(":");
+  return parts[parts.length - 1];
 }
 
 function InvestmentList(
@@ -35,7 +41,7 @@ function InvestmentList(
               key={i.name}
               sx={{ "&:nth-of-type(odd)": { backgroundColor: "#f5f5f5" } }}
             >
-              <TableCell>{i.name}</TableCell>
+              <TableCell>{investmentName(i.name)}</TableCell>
               <TableCell>
                 <div style={{ display: "flex", justifyContent: "flex-end" }}>
                   <div style={{ flex: 1 }}>{i.currency}</div>
@@ -64,22 +70,20 @@ export default function Investments(props: HTMLAttributes<HTMLDivElement>) {
 
   return (
     <>
-      <div {...props}>
-        <div style={{ display: "flex", gap: "1rem" }}>
-          <div style={{ flex: 1 }}>
-            <Typography variant="h5" gutterBottom>
-              Profitable Investments
-            </Typography>
-            <InvestmentList investments={profitable} />
-          </div>
-          <div style={{ flex: 1 }}>
-            <Typography variant="h5" gutterBottom>
-              Unprofitable Investments
-            </Typography>
-            <InvestmentList investments={unprofitable} />
-          </div>
-        </div>
-      </div>
+      <Grid container spacing={2} {...props}>
+        <Grid size={{ xs: 12, md: 6 }}>
+          <Typography variant="h5" gutterBottom>
+            Profitable Investments
+          </Typography>
+          <InvestmentList investments={profitable} />
+        </Grid>
+        <Grid size={{ xs: 12, md: 6 }}>
+          <Typography variant="h5" gutterBottom>
+            Unprofitable Investments
+          </Typography>
+          <InvestmentList investments={unprofitable} />
+        </Grid>
+      </Grid>
     </>
   );
 }

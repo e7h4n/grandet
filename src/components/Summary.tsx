@@ -28,7 +28,7 @@ export default function Summary() {
     isPositive: boolean,
     numberTitle: string
   ) => (
-    <Grid size={3}>
+    <Grid size={{ xs: 6, md: 3 }}>
       <Card>
         <CardContent>
           <Typography variant="h6" component="div">
@@ -44,7 +44,11 @@ export default function Summary() {
           >
             {value}
           </Typography>
-          <Typography variant="body2" color="text.secondary">
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            sx={{ display: { xs: "none", md: "block" } }}
+          >
             {numberTitle}
           </Typography>
         </CardContent>

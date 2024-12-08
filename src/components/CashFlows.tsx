@@ -11,6 +11,10 @@ import {
   Typography,
 } from "@mui/material";
 
+function investmentName(name: string) {
+  const parts = name.split(":");
+  return parts[parts.length - 1];
+}
 export default function CashFlows(props: HTMLAttributes<HTMLDivElement>) {
   const loadableCashFlows = useLoadable(cashFlows);
   if (loadableCashFlows.state !== "hasData") {
@@ -48,7 +52,7 @@ export default function CashFlows(props: HTMLAttributes<HTMLDivElement>) {
                   </div>
                 </TableCell>
                 <TableCell>{cf.isDividend ? "*" : ""}</TableCell>
-                <TableCell>{cf.account}</TableCell>
+                <TableCell>{investmentName(cf.account)}</TableCell>
               </TableRow>
             ))}
           </TableBody>
