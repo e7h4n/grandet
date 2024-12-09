@@ -14,6 +14,14 @@ import {
   updateAutoRefreshEffect,
 } from '../atoms/preference';
 import { navigateEffect } from '../atoms/route';
+import MenuIcon from '@mui/icons-material/Menu';
+
+const MENU_ITEMS = [
+  { path: '/', label: 'Dashboard' },
+  { path: '/cash_flows', label: 'Cash Flows' },
+  { path: '/investments', label: 'Investments' },
+  { path: '/irr', label: 'IRR' },
+];
 
 const anchorElUserAtom = $value<null | HTMLElement>(null);
 const handleOpenUserMenuEffect = $effect((_, set, event: React.MouseEvent<HTMLElement>) => {
@@ -21,6 +29,14 @@ const handleOpenUserMenuEffect = $effect((_, set, event: React.MouseEvent<HTMLEl
 });
 const handleCloseUserMenuEffect = $effect((_, set) => {
   set(anchorElUserAtom, null);
+});
+
+const anchorElNavAtom = $value<null | HTMLElement>(null);
+const handleOpenNavMenuEffect = $effect((_, set, event: React.MouseEvent<HTMLElement>) => {
+  set(anchorElNavAtom, event.currentTarget);
+});
+const handleCloseNavMenuEffect = $effect((_, set) => {
+  set(anchorElNavAtom, null);
 });
 
 function UserBox() {
@@ -94,44 +110,66 @@ function UserBox() {
 
 export default function NavBar(props: HTMLAttributes<HTMLDivElement>) {
   const navigate = useSet(navigateEffect);
+  const handleOpenNavMenu = useSet(handleOpenNavMenuEffect);
+  const handleCloseNavMenu = useSet(handleCloseNavMenuEffect);
+  const anchorElNav = useGet(anchorElNavAtom);
 
   return (
     <Box sx={{ flexGrow: 1 }} {...props}>
       <AppBar position="static">
         <Toolbar>
+          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+            <IconButton
+              size="large"
+              aria-label="navigation menu"
+              aria-controls="menu-appbar"
+              aria-haspopup="true"
+              onClick={handleOpenNavMenu}
+              color="inherit"
+            >
+              <MenuIcon />
+            </IconButton>
+            <Menu
+              id="menu-appbar"
+              anchorEl={anchorElNav}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'left',
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'left',
+              }}
+              open={Boolean(anchorElNav)}
+              onClose={handleCloseNavMenu}
+              sx={{
+                display: { xs: 'block', md: 'none' },
+              }}
+            >
+              {MENU_ITEMS.map((item) => (
+                <MenuItem
+                  key={item.path}
+                  onClick={() => {
+                    navigate(item.path);
+                    handleCloseNavMenu();
+                  }}
+                >
+                  <Typography textAlign="center">{item.label}</Typography>
+                </MenuItem>
+              ))}
+            </Menu>
+          </Box>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            <Button
-              onClick={() => {
-                navigate('/');
-              }}
-              sx={{ my: 2, color: 'white', display: 'block' }}
-            >
-              Dashboard
-            </Button>
-            <Button
-              onClick={() => {
-                navigate('/cash_flows');
-              }}
-              sx={{ my: 2, color: 'white', display: 'block' }}
-            >
-              Cash Flows
-            </Button>
-            <Button
-              onClick={() => {
-                navigate('/investments');
-              }}
-              sx={{ my: 2, color: 'white', display: 'block' }}
-            >
-              Investments
-            </Button>
-            <Button
-              onClick={() => {
-                navigate('/irr');
-              }}
-              sx={{ my: 2, color: 'white', display: 'block' }}
-            >
-              IRR
-            </Button>
+            {MENU_ITEMS.map((item) => (
+              <Button
+                key={item.path}
+                onClick={() => navigate(item.path)}
+                sx={{ my: 2, color: 'white', display: 'block' }}
+              >
+                {item.label}
+              </Button>
+            ))}
           </Box>
           <UserBox />
         </Toolbar>

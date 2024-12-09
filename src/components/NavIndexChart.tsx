@@ -18,7 +18,7 @@ export default function NavIndexChart(props: HTMLAttributes<HTMLDivElement>) {
   return (
     <>
       <Typography variant="h5" gutterBottom>
-        NAV Index
+        NAV
       </Typography>
       {navIndex_.state === 'hasData' ? (
         <div {...props} ref={elemRef} />

@@ -1,16 +1,10 @@
-import { Box, Container } from '@mui/material';
 import CumulativeReturns from '../components/CumulativeReturns';
-import NavBar from '../components/NavBar';
+import Layout from '../components/Layout';
 
 export function IrrPage() {
   return (
-    <>
-      <NavBar />
-      <Container>
-        <Box sx={{ mt: 2 }}>
-          <CumulativeReturns />
-        </Box>
-      </Container>
-    </>
+    <Layout>
+      <CumulativeReturns />
+    </Layout>
   );
 }

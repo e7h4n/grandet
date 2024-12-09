@@ -14,16 +14,5 @@ export const LoginPage = () => {
     return () => ctrl.abort();
   }, [showAuthPage]);
 
-  return (
-    <div
-      style={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: '100vh',
-      }}
-    >
-      <div ref={elemRef} />
-    </div>
-  );
+  return <div ref={elemRef} />;
 };

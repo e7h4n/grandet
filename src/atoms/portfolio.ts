@@ -342,6 +342,7 @@ export const calendarReturnsChartOptions = $computed(async (get) => {
       bottom: 5,
       containLabel: true,
     },
+    animation: false,
   };
 });
 
