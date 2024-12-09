@@ -1,5 +1,6 @@
 import { $computed, $effect, $value } from 'rippling';
 import Corbado from '@corbado/web-js';
+import { navigateEffect } from './route';
 
 const reloadAtom = $value(0);
 const corbadoAtom = $computed(async (get) => {
@@ -35,12 +36,14 @@ export const authedAtom = $computed(async (get) => !!(await get(userAtom)));
 
 export const onAuthEffect = $effect((_, set) => {
   set(reloadAtom, (x) => x + 1);
+  set(navigateEffect, '/');
 });
 
 export const logoutEffect = $effect(async (get, set) => {
   const corbado = await get(corbadoAtom);
   await corbado.logout();
   set(reloadAtom, (x) => x + 1);
+  set(navigateEffect, '/login');
 });
 
 export const sessionTokenAtom = $computed(async (get) => {

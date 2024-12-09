@@ -39,7 +39,7 @@ export const updateAutoRefreshEffect = $effect((get, set, isEnabled: boolean) =>
 
 const autoReloadControllerAtom = $value<AbortController | undefined>(undefined);
 
-export const beginAutoRefreshEffect = $effect(async (get, set) => {
+export const beginAutoRefreshEffect = $effect(async (get, set, signal?: AbortSignal) => {
   const isEnabled = get(autoRefreshAtom);
   if (!isEnabled) {
     return;
@@ -61,6 +61,6 @@ export const beginAutoRefreshEffect = $effect(async (get, set) => {
       set(reloadCalendarChart, controller.signal);
     },
     1000 * 60 * 10, // 10 minutes
-    { signal: controller.signal },
+    { signal: AbortSignal.any([signal, controller.signal].filter(Boolean) as AbortSignal[]) },
   );
 });

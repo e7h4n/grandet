@@ -1,4 +1,4 @@
-import { server } from '../mocks/node';
+import { server } from './src/mocks/node';
 import { beforeAll, afterAll, beforeEach } from 'vitest';
 
 beforeAll(() => {

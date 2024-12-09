@@ -5,6 +5,10 @@ export default defineConfig({
   plugins: [react()],
   test: {
     environment: 'happy-dom',
-    setupFiles: ['./src/__tests__/setup.ts'],
+    setupFiles: ['./vitest.setup.ts'],
+    browser: {
+      provider: 'playwright',
+      name: 'chromium',
+    },
   },
 });

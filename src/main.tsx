@@ -1,9 +1,9 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import App from './App.tsx';
 import './index.css';
 import { createStore, StoreProvider } from 'rippling';
-import { beginAutoRefreshEffect } from './atoms/preference.ts';
+import { Router } from './components/Router';
+import { mainEffect } from './atoms/main';
 
 async function prepare() {
   if (import.meta.env.DEV) {
@@ -20,13 +20,14 @@ void prepare().then(() => {
     return;
   }
 
+  const rootAbortController = new AbortController();
   const store = createStore();
-  store.set(beginAutoRefreshEffect);
+  store.set(mainEffect, rootAbortController.signal);
 
   createRoot(document.getElementById('root')!).render(
     <StrictMode>
       <StoreProvider value={store}>
-        <App />
+        <Router />
       </StoreProvider>
     </StrictMode>,
   );
