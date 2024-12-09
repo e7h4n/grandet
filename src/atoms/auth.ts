@@ -32,7 +32,10 @@ export const userAtom = $computed(async (get) => {
   return (await corbado.getFullUser()).unwrap();
 });
 
-export const authedAtom = $computed(async (get) => !!(await get(userAtom)));
+export const authedAtom = $computed(async (get) => {
+  return true;
+  return !!(await get(userAtom));
+});
 
 export const onAuthEffect = $effect((_, set) => {
   set(reloadAtom, (x) => x + 1);

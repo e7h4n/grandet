@@ -5,7 +5,7 @@ import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import { $effect, $value, useGet, useLoadable, useSet } from 'rippling';
 import { authedAtom, logoutEffect, userAtom } from '../atoms/auth';
-import { Avatar, FormControlLabel, Menu, MenuItem, Switch, Tooltip } from '@mui/material';
+import { Avatar, Button, FormControlLabel, Menu, MenuItem, Switch, Tooltip } from '@mui/material';
 import React, { HTMLAttributes } from 'react';
 import {
   autoRefreshAtom,
@@ -13,6 +13,7 @@ import {
   showDetailNumberAtom,
   updateAutoRefreshEffect,
 } from '../atoms/preference';
+import { navigateEffect } from '../atoms/route';
 
 const anchorElUserAtom = $value<null | HTMLElement>(null);
 const handleOpenUserMenuEffect = $effect((_, set, event: React.MouseEvent<HTMLElement>) => {
@@ -92,13 +93,46 @@ function UserBox() {
 }
 
 export default function NavBar(props: HTMLAttributes<HTMLDivElement>) {
+  const navigate = useSet(navigateEffect);
+
   return (
     <Box sx={{ flexGrow: 1 }} {...props}>
       <AppBar position="static">
         <Toolbar>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Beancount
-          </Typography>
+          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+            <Button
+              onClick={() => {
+                navigate('/');
+              }}
+              sx={{ my: 2, color: 'white', display: 'block' }}
+            >
+              Dashboard
+            </Button>
+            <Button
+              onClick={() => {
+                navigate('/cash_flows');
+              }}
+              sx={{ my: 2, color: 'white', display: 'block' }}
+            >
+              Cash Flows
+            </Button>
+            <Button
+              onClick={() => {
+                navigate('/investments');
+              }}
+              sx={{ my: 2, color: 'white', display: 'block' }}
+            >
+              Investments
+            </Button>
+            <Button
+              onClick={() => {
+                navigate('/irr');
+              }}
+              sx={{ my: 2, color: 'white', display: 'block' }}
+            >
+              IRR
+            </Button>
+          </Box>
           <UserBox />
         </Toolbar>
       </AppBar>

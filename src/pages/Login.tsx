@@ -2,7 +2,7 @@ import { useSet } from 'rippling';
 import { showAuthPageEffect } from '../atoms/auth';
 import { useEffect, useRef } from 'react';
 
-export const AuthPage = () => {
+export const LoginPage = () => {
   const elemRef = useRef<HTMLDivElement>(null);
   const showAuthPage = useSet(showAuthPageEffect);
 
