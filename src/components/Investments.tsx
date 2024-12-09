@@ -1,9 +1,9 @@
 import { HTMLAttributes } from 'react';
 import { useGet, useLoadable } from 'rippling';
-import { investments } from '../atoms/portfolio';
+import { investments$ } from '../atoms/portfolio';
 import Grid from '@mui/material/Grid2';
 import { Skeleton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
-import { showDetailNumberAtom } from '../atoms/preference';
+import { showDetailNumber$ } from '../atoms/preference';
 
 interface Investment {
   currency: string;
@@ -17,7 +17,7 @@ function investmentName(name: string) {
 }
 
 function InvestmentList(props: HTMLAttributes<HTMLDivElement> & { investments: Investment[] }) {
-  const showDetailNumber = useGet(showDetailNumberAtom);
+  const showDetailNumber = useGet(showDetailNumber$);
 
   return (
     <TableContainer {...props}>
@@ -54,7 +54,7 @@ function InvestmentList(props: HTMLAttributes<HTMLDivElement> & { investments: I
 }
 
 export default function Investments(props: HTMLAttributes<HTMLDivElement>) {
-  const loadableInvestments = useLoadable(investments);
+  const loadableInvestments = useLoadable(investments$);
   if (loadableInvestments.state !== 'hasData') {
     return <Skeleton />;
   }

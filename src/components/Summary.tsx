@@ -1,8 +1,8 @@
 import { useGet, useLoadable, useSet } from 'rippling';
-import { pnl, irrSummary, navIndex } from '../atoms/portfolio';
+import { pnl$, irrSummary$, navIndex$ } from '../atoms/portfolio';
 import { Card, CardContent, IconButton, Skeleton, Typography } from '@mui/material';
 import Grid from '@mui/material/Grid2';
-import { setShowDetailNumberEffect, showDetailNumberAtom } from '../atoms/preference';
+import { setShowDetailNumber$, showDetailNumber$ } from '../atoms/preference';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
@@ -21,11 +21,11 @@ function SkeletonCard() {
 }
 
 export default function Summary() {
-  const pnl_ = useLoadable(pnl);
-  const irrSummary_ = useLoadable(irrSummary);
-  const navIndex_ = useLoadable(navIndex);
-  const showDetailNumber = useGet(showDetailNumberAtom);
-  const updateShowDetailNumber = useSet(setShowDetailNumberEffect);
+  const pnl_ = useLoadable(pnl$);
+  const irrSummary_ = useLoadable(irrSummary$);
+  const navIndex_ = useLoadable(navIndex$);
+  const showDetailNumber = useGet(showDetailNumber$);
+  const updateShowDetailNumber = useSet(setShowDetailNumber$);
 
   if (pnl_.state !== 'hasData' || irrSummary_.state !== 'hasData' || navIndex_.state !== 'hasData') {
     return (

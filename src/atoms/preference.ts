@@ -1,64 +1,64 @@
-import { $computed, $effect, $value } from 'rippling';
-import { userAtom } from './auth';
+import { $computed, $func, $value } from 'rippling';
+import { user$ } from './auth';
 import { interval } from 'signal-timers';
-import { refreshEffect, reloadCalendarChart, reloadNavChart } from './portfolio';
-const refreshAtom = $value(0);
+import { refresh$, reloadCalendarChart$, reloadNavChart$ } from './portfolio';
+const internalRefresh$ = $value(0);
 
-export const showDetailNumberAtom = $computed((get) => {
-  get(refreshAtom);
+export const showDetailNumber$ = $computed((get) => {
+  get(internalRefresh$);
   return localStorage.getItem('showDetailNumber') === 'true';
 });
 
-export const setShowDetailNumberEffect = $effect((_, set, status: boolean) => {
+export const setShowDetailNumber$ = $func(({ set }, status: boolean) => {
   if (status) {
     localStorage.setItem('showDetailNumber', 'true');
   } else {
     localStorage.removeItem('showDetailNumber');
   }
-  set(refreshAtom, (x) => x + 1);
+  set(internalRefresh$, (x) => x + 1);
 });
 
-export const autoRefreshAtom = $computed((get) => {
-  get(refreshAtom);
+export const autoRefresh$ = $computed((get) => {
+  get(internalRefresh$);
   return localStorage.getItem('autoRefresh') === 'true';
 });
 
-export const updateAutoRefreshEffect = $effect((get, set, isEnabled: boolean) => {
+export const updateAutoRefresh$ = $func(({ get, set }, isEnabled: boolean) => {
   if (isEnabled) {
     localStorage.setItem('autoRefresh', 'true');
   } else {
     localStorage.removeItem('autoRefresh');
   }
-  set(refreshAtom, (x) => x + 1);
+  set(internalRefresh$, (x) => x + 1);
   if (isEnabled) {
-    set(beginAutoRefreshEffect);
+    set(beginAutoRefresh$);
   } else {
-    get(autoReloadControllerAtom)?.abort();
+    get(autoReloadController$)?.abort();
   }
 });
 
-const autoReloadControllerAtom = $value<AbortController | undefined>(undefined);
+const autoReloadController$ = $value<AbortController | undefined>(undefined);
 
-export const beginAutoRefreshEffect = $effect(async (get, set, signal?: AbortSignal) => {
-  const isEnabled = get(autoRefreshAtom);
+export const beginAutoRefresh$ = $func(async ({ get, set }, signal?: AbortSignal) => {
+  const isEnabled = get(autoRefresh$);
   if (!isEnabled) {
     return;
   }
 
-  const user = await get(userAtom);
+  const user = await get(user$);
   if (!user) {
     return;
   }
 
-  get(autoReloadControllerAtom)?.abort();
+  get(autoReloadController$)?.abort();
   const controller = new AbortController();
-  set(autoReloadControllerAtom, controller);
+  set(autoReloadController$, controller);
 
   interval(
     async () => {
-      set(refreshEffect);
-      set(reloadNavChart, controller.signal);
-      set(reloadCalendarChart, controller.signal);
+      set(refresh$);
+      set(reloadNavChart$, controller.signal);
+      set(reloadCalendarChart$, controller.signal);
     },
     1000 * 60 * 10, // 10 minutes
     { signal: AbortSignal.any([signal, controller.signal].filter(Boolean) as AbortSignal[]) },

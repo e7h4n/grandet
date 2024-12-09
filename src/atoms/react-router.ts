@@ -1,12 +1,12 @@
 import { ReactNode } from 'react';
-import { $computed, $effect, $value } from 'rippling';
+import { $computed, $func, $value } from 'rippling';
 
-const internalPageAtom = $value<ReactNode | undefined>(undefined);
+const internalPage$ = $value<ReactNode | undefined>(undefined);
 
-export const pageAtom = $computed((get) => {
-  return get(internalPageAtom);
+export const page$ = $computed((get) => {
+  return get(internalPage$);
 });
 
-export const updatePageEffect = $effect((_, set, page: ReactNode) => {
-  set(internalPageAtom, page);
+export const updatePage$ = $func(({ set }, page: ReactNode) => {
+  set(internalPage$, page);
 });

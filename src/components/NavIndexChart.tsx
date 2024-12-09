@@ -1,12 +1,12 @@
 import { useRef, HTMLAttributes, useEffect } from 'react';
 import { useLoadable, useSet } from 'rippling';
-import { navIndex, renderNavIndex } from '../atoms/portfolio';
+import { navIndex$, renderNavIndex$ } from '../atoms/portfolio';
 import { Skeleton, Typography } from '@mui/material';
 
 export default function NavIndexChart(props: HTMLAttributes<HTMLDivElement>) {
-  const navIndex_ = useLoadable(navIndex);
+  const navIndex_ = useLoadable(navIndex$);
   const elemRef = useRef<HTMLDivElement>(null);
-  const renderChart = useSet(renderNavIndex);
+  const renderChart = useSet(renderNavIndex$);
 
   useEffect(() => {
     if (!elemRef.current) return;

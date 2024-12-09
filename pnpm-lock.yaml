@@ -36,8 +36,8 @@ importers:
         specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
       rippling:
-        specifier: ^0.3.0
-        version: 0.3.0(@types/react@18.3.14)(react@18.3.1)
+        specifier: ^1.0.0
+        version: 1.0.0(@types/react@18.3.14)(react@18.3.1)
       signal-timers:
         specifier: ^1.0.4
         version: 1.0.4
@@ -2744,8 +2744,8 @@ packages:
   rfdc@1.4.1:
     resolution: {integrity: sha512-q1b3N5QkRUWUl7iyylaaj3kOpIT0N2i9MqIEQXP73GVsN9cw3fdx8X63cEmWhJGi2PPCF23Ijp7ktmd39rawIA==}
 
-  rippling@0.3.0:
-    resolution: {integrity: sha512-Gu0/te6X10fVIpqwypXtV7JFZaC+EIIcjQQQpCgTBCu4Ry6N7GmYWb/Y9l09O99c02QsKz3VKUMT+ews1GMaRw==}
+  rippling@1.0.0:
+    resolution: {integrity: sha512-0JX3GbBOBgjznH6AFD+MDtbgGlslWjwG6y3MD5/IrHuOVI6mOfiuJNVdewug0gDnt5Wnu2aY4dLSHQW+4dD29A==}
     peerDependencies:
       '@types/react': '>=17.0.0'
       react: '>=17.0.0'
@@ -6035,7 +6035,7 @@ snapshots:
 
   rfdc@1.4.1: {}
 
-  rippling@0.3.0(@types/react@18.3.14)(react@18.3.1):
+  rippling@1.0.0(@types/react@18.3.14)(react@18.3.1):
     optionalDependencies:
       '@types/react': 18.3.14
       react: 18.3.1

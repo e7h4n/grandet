@@ -1,12 +1,12 @@
 import { useLayoutEffect, useRef, HTMLAttributes } from 'react';
 import { useLoadable, useSet } from 'rippling';
-import { calendarReturns, renderCalendarReturns } from '../atoms/portfolio';
+import { calendarReturns$, renderCalendarReturns$ } from '../atoms/portfolio';
 import { Skeleton, Typography } from '@mui/material';
 
 export default function CalendarChart(props: HTMLAttributes<HTMLDivElement>) {
-  const data_ = useLoadable(calendarReturns);
+  const data_ = useLoadable(calendarReturns$);
   const elemRef = useRef<HTMLDivElement>(null);
-  const renderChart = useSet(renderCalendarReturns);
+  const renderChart = useSet(renderCalendarReturns$);
 
   useLayoutEffect(() => {
     if (!elemRef.current) return;

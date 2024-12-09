@@ -1,21 +1,21 @@
-import { $computed, $effect, $value } from 'rippling';
+import { $computed, $func, $value } from 'rippling';
 import Corbado from '@corbado/web-js';
-import { navigateEffect } from './route';
+import { navigate$ } from './route';
 
-const reloadAtom = $value(0);
-const corbadoAtom = $computed(async (get) => {
-  get(reloadAtom);
+const reload$ = $value(0);
+const corbado$ = $computed(async (get) => {
+  get(reload$);
 
   return await Corbado.load({
     projectId: 'pro-8910668211600497001',
   }).then(() => Corbado);
 });
 
-export const showAuthPageEffect = $effect(async (get, set, elem: HTMLDivElement, signal: AbortSignal) => {
-  const corbado = await get(corbadoAtom);
+export const showAuthPage$ = $func(async ({ get, set }, elem: HTMLDivElement, signal: AbortSignal) => {
+  const corbado = await get(corbado$);
   corbado.mountAuthUI(elem, {
     onLoggedIn: () => {
-      set(onAuthEffect);
+      set(onAuth$);
     },
   });
 
@@ -24,38 +24,37 @@ export const showAuthPageEffect = $effect(async (get, set, elem: HTMLDivElement,
   });
 });
 
-export const userAtom = $computed(async (get) => {
-  const corbado = await get(corbadoAtom);
+export const user$ = $computed(async (get) => {
+  const corbado = await get(corbado$);
   if (!corbado.user) {
     return undefined;
   }
   return (await corbado.getFullUser()).unwrap();
 });
 
-export const authedAtom = $computed(async (get) => {
-  return true;
-  return !!(await get(userAtom));
+export const authed$ = $computed(async (get) => {
+  return !!(await get(user$));
 });
 
-export const onAuthEffect = $effect((_, set) => {
-  set(reloadAtom, (x) => x + 1);
-  set(navigateEffect, '/');
+export const onAuth$ = $func(({ set }) => {
+  set(reload$, (x) => x + 1);
+  set(navigate$, '/');
 });
 
-export const logoutEffect = $effect(async (get, set) => {
-  const corbado = await get(corbadoAtom);
+export const logout$ = $func(async ({ get, set }) => {
+  const corbado = await get(corbado$);
   await corbado.logout();
-  set(reloadAtom, (x) => x + 1);
-  set(navigateEffect, '/login');
+  set(reload$, (x) => x + 1);
+  set(navigate$, '/login');
 });
 
-export const sessionTokenAtom = $computed(async (get) => {
-  const corbado = await get(corbadoAtom);
+export const sessionToken$ = $computed(async (get) => {
+  const corbado = await get(corbado$);
   return corbado.sessionToken;
 });
 
-export const sessionHeadersAtom = $computed(async (get) => {
-  const token = await get(sessionTokenAtom);
+export const sessionHeaders$ = $computed(async (get) => {
+  const token = await get(sessionToken$);
   const headers = new Headers();
   headers.append('Authorization', `Bearer ${token}`);
   return headers;

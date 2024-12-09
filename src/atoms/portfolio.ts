@@ -1,17 +1,17 @@
-import { $computed, $effect, $value } from 'rippling';
+import { $computed, $func, $value } from 'rippling';
 import * as echarts from 'echarts';
-import { sessionHeadersAtom } from './auth';
-import { apiHostAtom } from './api';
+import { sessionHeaders$ } from './auth';
+import { apiHost$ } from './api';
 
-const refreshAtom = $value(0);
+const internalRefresh$ = $value(0);
 
-export const refreshEffect = $effect((_, set) => {
-  set(refreshAtom, (x) => x + 1);
+export const refresh$ = $func(({ set }) => {
+  set(internalRefresh$, (x) => x + 1);
 });
 
-export const navIndex = $computed(async (get) => {
-  const headers = await get(sessionHeadersAtom);
-  const apiHost = get(apiHostAtom);
+export const navIndex$ = $computed(async (get) => {
+  const headers = await get(sessionHeaders$);
+  const apiHost = get(apiHost$);
   const resp = await fetch(apiHost + '/portfolio/nav_index' + window.location.search, { headers });
   const data = await resp.json();
   return data.map(([dateStr, indexStr]: [string, string]) => {
@@ -33,10 +33,10 @@ export const cashFlows = $computed<
     }[]
   >
 >(async (get) => {
-  get(refreshAtom);
+  get(internalRefresh$);
 
-  const headers = await get(sessionHeadersAtom);
-  const apiHost = get(apiHostAtom);
+  const headers = await get(sessionHeaders$);
+  const apiHost = get(apiHost$);
   const resp = await fetch(apiHost + '/portfolio/cash_flows' + window.location.search, { headers });
   const data = await resp.json();
   return data.map(
@@ -62,21 +62,21 @@ export const cashFlows = $computed<
   );
 });
 
-export const investments = $computed(async (get) => {
-  get(refreshAtom);
+export const investments$ = $computed(async (get) => {
+  get(internalRefresh$);
 
-  const headers = await get(sessionHeadersAtom);
-  const apiHost = get(apiHostAtom);
+  const headers = await get(sessionHeaders$);
+  const apiHost = get(apiHost$);
   return fetch(apiHost + '/portfolio/investments' + window.location.search, {
     headers,
   }).then((res) => res.json());
 });
 
-export const pnl = $computed(async (get) => {
-  get(refreshAtom);
+export const pnl$ = $computed(async (get) => {
+  get(internalRefresh$);
 
-  const headers = await get(sessionHeadersAtom);
-  const apiHost = get(apiHostAtom);
+  const headers = await get(sessionHeaders$);
+  const apiHost = get(apiHost$);
   const resp = await fetch(apiHost + '/portfolio/pnl' + window.location.search, { headers });
   const data = await resp.json();
   return {
@@ -89,11 +89,11 @@ export const pnl = $computed(async (get) => {
   };
 });
 
-export const calendarReturns = $computed(async (get) => {
-  get(refreshAtom);
+export const calendarReturns$ = $computed(async (get) => {
+  get(internalRefresh$);
 
-  const headers = await get(sessionHeadersAtom);
-  const apiHost = get(apiHostAtom);
+  const headers = await get(sessionHeaders$);
+  const apiHost = get(apiHost$);
   const resp = await fetch(apiHost + '/portfolio/calendar_returns' + window.location.search, { headers });
   const data = await resp.json();
   return data.map((data: [string, number][]) => {
@@ -101,28 +101,28 @@ export const calendarReturns = $computed(async (get) => {
   });
 });
 
-export const cumulativeReturns = $computed(async (get) => {
-  get(refreshAtom);
+export const cumulativeReturns$ = $computed(async (get) => {
+  get(internalRefresh$);
 
-  const headers = await get(sessionHeadersAtom);
-  const apiHost = get(apiHostAtom);
+  const headers = await get(sessionHeaders$);
+  const apiHost = get(apiHost$);
   return fetch(apiHost + '/portfolio/cumulative_returns' + window.location.search, { headers }).then((res) =>
     res.json(),
   );
 });
 
-export const irrSummary = $computed(async (get) => {
-  get(refreshAtom);
+export const irrSummary$ = $computed(async (get) => {
+  get(internalRefresh$);
 
-  const headers = await get(sessionHeadersAtom);
-  const apiHost = get(apiHostAtom);
+  const headers = await get(sessionHeaders$);
+  const apiHost = get(apiHost$);
   return fetch(apiHost + '/portfolio/irr_summary' + window.location.search, {
     headers,
   }).then((res) => res.json());
 });
 
-export const navIndexChartOptions = $computed(async (get) => {
-  const data = await get(navIndex);
+export const navIndexChartOptions$ = $computed(async (get) => {
+  const data = await get(navIndex$);
 
   return {
     backgroundColor: '#fff',
@@ -248,8 +248,8 @@ export const navIndexChartOptions = $computed(async (get) => {
   };
 });
 
-export const calendarReturnsChartOptions = $computed(async (get) => {
-  const data = await get(calendarReturns);
+export const calendarReturnsChartOptions$ = $computed(async (get) => {
+  const data = await get(calendarReturns$);
   return {
     backgroundColor: '#fff',
     textStyle: {
@@ -346,21 +346,21 @@ export const calendarReturnsChartOptions = $computed(async (get) => {
   };
 });
 
-const navChartAtom = $value<echarts.ECharts | undefined>(undefined);
+const navChart$ = $value<echarts.ECharts | undefined>(undefined);
 
-export const reloadNavChart = $effect(async (get, _set, signal: AbortSignal) => {
-  const options = await get(navIndexChartOptions);
+export const reloadNavChart$ = $func(async ({ get }, signal: AbortSignal) => {
+  const options = await get(navIndexChartOptions$);
   signal.throwIfAborted();
 
-  get(navChartAtom)?.setOption(options);
+  get(navChart$)?.setOption(options);
 });
 
-export const renderNavIndex = $effect(async (get, set, elem: HTMLDivElement, signal: AbortSignal) => {
-  const options = await get(navIndexChartOptions);
+export const renderNavIndex$ = $func(async ({ get, set }, elem: HTMLDivElement, signal: AbortSignal) => {
+  const options = await get(navIndexChartOptions$);
   const chart = echarts.init(elem);
-  set(navChartAtom, chart);
+  set(navChart$, chart);
   signal.addEventListener('abort', () => {
-    set(navChartAtom, undefined);
+    set(navChart$, undefined);
     chart.dispose();
   });
   window.addEventListener(
@@ -373,21 +373,21 @@ export const renderNavIndex = $effect(async (get, set, elem: HTMLDivElement, sig
   chart.setOption(options);
 });
 
-const calendarChartAtom = $value<echarts.ECharts | undefined>(undefined);
+const calendarChart$ = $value<echarts.ECharts | undefined>(undefined);
 
-export const reloadCalendarChart = $effect(async (get, _set, signal: AbortSignal) => {
-  const options = await get(calendarReturnsChartOptions);
+export const reloadCalendarChart$ = $func(async ({ get }, signal: AbortSignal) => {
+  const options = await get(calendarReturnsChartOptions$);
   signal.throwIfAborted();
 
-  get(calendarChartAtom)?.setOption(options);
+  get(calendarChart$)?.setOption(options);
 });
 
-export const renderCalendarReturns = $effect(async (get, set, elem: HTMLDivElement, signal: AbortSignal) => {
-  const options = await get(calendarReturnsChartOptions);
+export const renderCalendarReturns$ = $func(async ({ get, set }, elem: HTMLDivElement, signal: AbortSignal) => {
+  const options = await get(calendarReturnsChartOptions$);
   const chart = echarts.init(elem);
-  set(calendarChartAtom, chart);
+  set(calendarChart$, chart);
   signal.addEventListener('abort', () => {
-    set(calendarChartAtom, undefined);
+    set(calendarChart$, undefined);
     chart.dispose();
   });
   window.addEventListener(

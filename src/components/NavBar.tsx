@@ -3,17 +3,12 @@ import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
-import { $effect, $value, useGet, useLoadable, useSet } from 'rippling';
-import { authedAtom, logoutEffect, userAtom } from '../atoms/auth';
+import { $func, $value, useGet, useLoadable, useSet } from 'rippling';
+import { authed$, logout$, user$ } from '../atoms/auth';
 import { Avatar, Button, FormControlLabel, Menu, MenuItem, Switch, Tooltip } from '@mui/material';
 import React, { HTMLAttributes } from 'react';
-import {
-  autoRefreshAtom,
-  setShowDetailNumberEffect,
-  showDetailNumberAtom,
-  updateAutoRefreshEffect,
-} from '../atoms/preference';
-import { navigateEffect } from '../atoms/route';
+import { autoRefresh$, setShowDetailNumber$, showDetailNumber$, updateAutoRefresh$ } from '../atoms/preference';
+import { navigate$ } from '../atoms/route';
 import MenuIcon from '@mui/icons-material/Menu';
 
 const MENU_ITEMS = [
@@ -23,33 +18,33 @@ const MENU_ITEMS = [
   { path: '/irr', label: 'IRR' },
 ];
 
-const anchorElUserAtom = $value<null | HTMLElement>(null);
-const handleOpenUserMenuEffect = $effect((_, set, event: React.MouseEvent<HTMLElement>) => {
-  set(anchorElUserAtom, event.currentTarget);
+const anchorElUser$ = $value<null | HTMLElement>(null);
+const handleOpenUserMenu$ = $func(({ set }, event: React.MouseEvent<HTMLElement>) => {
+  set(anchorElUser$, event.currentTarget);
 });
-const handleCloseUserMenuEffect = $effect((_, set) => {
-  set(anchorElUserAtom, null);
+const handleCloseUserMenu$ = $func(({ set }) => {
+  set(anchorElUser$, null);
 });
 
-const anchorElNavAtom = $value<null | HTMLElement>(null);
-const handleOpenNavMenuEffect = $effect((_, set, event: React.MouseEvent<HTMLElement>) => {
-  set(anchorElNavAtom, event.currentTarget);
+const anchorElNav$ = $value<null | HTMLElement>(null);
+const handleOpenNavMenu$ = $func(({ set }, event: React.MouseEvent<HTMLElement>) => {
+  set(anchorElNav$, event.currentTarget);
 });
-const handleCloseNavMenuEffect = $effect((_, set) => {
-  set(anchorElNavAtom, null);
+const handleCloseNavMenu$ = $func(({ set }) => {
+  set(anchorElNav$, null);
 });
 
 function UserBox() {
-  const handleOpenUserMenu = useSet(handleOpenUserMenuEffect);
-  const handleCloseUserMenu = useSet(handleCloseUserMenuEffect);
-  const anchorElUser = useGet(anchorElUserAtom);
-  const logout = useSet(logoutEffect);
-  const _user = useLoadable(userAtom);
-  const _authed = useLoadable(authedAtom);
-  const showDetailNumber = useGet(showDetailNumberAtom);
-  const updateShowDetailNumber = useSet(setShowDetailNumberEffect);
-  const autoRefresh = useGet(autoRefreshAtom);
-  const updateAutoRefresh = useSet(updateAutoRefreshEffect);
+  const handleOpenUserMenu = useSet(handleOpenUserMenu$);
+  const handleCloseUserMenu = useSet(handleCloseUserMenu$);
+  const anchorElUser = useGet(anchorElUser$);
+  const logout = useSet(logout$);
+  const _user = useLoadable(user$);
+  const _authed = useLoadable(authed$);
+  const showDetailNumber = useGet(showDetailNumber$);
+  const updateShowDetailNumber = useSet(setShowDetailNumber$);
+  const autoRefresh = useGet(autoRefresh$);
+  const updateAutoRefresh = useSet(updateAutoRefresh$);
 
   if (_authed.state !== 'hasData' || _user.state !== 'hasData') {
     return null;
@@ -109,10 +104,10 @@ function UserBox() {
 }
 
 export default function NavBar(props: HTMLAttributes<HTMLDivElement>) {
-  const navigate = useSet(navigateEffect);
-  const handleOpenNavMenu = useSet(handleOpenNavMenuEffect);
-  const handleCloseNavMenu = useSet(handleCloseNavMenuEffect);
-  const anchorElNav = useGet(anchorElNavAtom);
+  const navigate = useSet(navigate$);
+  const handleOpenNavMenu = useSet(handleOpenNavMenu$);
+  const handleCloseNavMenu = useSet(handleCloseNavMenu$);
+  const anchorElNav = useGet(anchorElNav$);
 
   return (
     <Box sx={{ flexGrow: 1 }} {...props}>

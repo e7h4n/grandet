@@ -1,6 +1,6 @@
 import { useGet } from 'rippling';
-import { pageAtom } from '../atoms/react-router';
+import { page$ } from '../atoms/react-router';
 
 export function Router() {
-  return useGet(pageAtom);
+  return useGet(page$);
 }

@@ -2,7 +2,7 @@ import { HTMLAttributes } from 'react';
 import { useGet, useLoadable } from 'rippling';
 import { cashFlows } from '../atoms/portfolio';
 import { Skeleton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
-import { showDetailNumberAtom } from '../atoms/preference';
+import { showDetailNumber$ } from '../atoms/preference';
 
 function investmentName(name: string) {
   const parts = name.split(':');
@@ -10,7 +10,7 @@ function investmentName(name: string) {
 }
 export default function CashFlows(props: HTMLAttributes<HTMLDivElement>) {
   const loadableCashFlows = useLoadable(cashFlows);
-  const showDetailNumber = useGet(showDetailNumberAtom);
+  const showDetailNumber = useGet(showDetailNumber$);
   if (loadableCashFlows.state !== 'hasData') {
     return <Skeleton />;
   }

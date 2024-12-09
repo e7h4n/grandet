@@ -1,57 +1,57 @@
-import { $computed, $effect, $value, Effect } from 'rippling';
+import { $computed, $func, $value, Func } from 'rippling';
 
-const reloadPathnameAtom = $value(0);
-const pathnameAtom = $computed((get) => {
-  get(reloadPathnameAtom);
+const reloadPathname$ = $value(0);
+const pathname$ = $computed((get) => {
+  get(reloadPathname$);
   return window.location.pathname;
 });
 
-export const navigateEffect = $effect((_, set, pathname: string, signal?: AbortSignal) => {
+export const navigate$ = $func(({ set }, pathname: string, signal?: AbortSignal) => {
   window.history.pushState({}, '', pathname);
-  set(reloadPathnameAtom, (x) => x + 1);
-  set(loadRouteEffect, signal);
+  set(reloadPathname$, (x) => x + 1);
+  set(loadRoute$, signal);
 });
 
 interface Route {
   path: string;
-  setup: Effect<void, [AbortSignal]>;
+  setup: Func<void, [AbortSignal]>;
 }
 
-const inertnalRouteConfigAtom = $value<Route[] | undefined>(undefined);
-export const currentRouteAtom = $computed((get) => {
-  const config = get(inertnalRouteConfigAtom);
+const inertnalRouteConfig$ = $value<Route[] | undefined>(undefined);
+export const currentRoute$ = $computed((get) => {
+  const config = get(inertnalRouteConfig$);
   if (!config) {
     return null;
   }
 
-  const match = config.find((route) => route.path === get(pathnameAtom));
+  const match = config.find((route) => route.path === get(pathname$));
   if (!match) {
     return null;
   }
   return match;
 });
 
-const loadRouteControllerAtom = $value<AbortController | undefined>(undefined);
-const loadRouteEffect = $effect((get, set, signal?: AbortSignal) => {
-  get(loadRouteControllerAtom)?.abort();
-  const currentRoute = get(currentRouteAtom);
+const loadRouteController$ = $value<AbortController | undefined>(undefined);
+const loadRoute$ = $func(({ get, set }, signal?: AbortSignal) => {
+  get(loadRouteController$)?.abort();
+  const currentRoute = get(currentRoute$);
   if (!currentRoute) {
     throw new Error('No route matches');
   }
   const controller = new AbortController();
-  set(loadRouteControllerAtom, controller);
+  set(loadRouteController$, controller);
   set(currentRoute.setup, AbortSignal.any([controller.signal, signal].filter(Boolean) as AbortSignal[]));
 });
 
-export const initRoutesEffect = $effect((_, set, config: Route[], signal: AbortSignal) => {
-  set(inertnalRouteConfigAtom, config);
-  set(loadRouteEffect, signal);
+export const initRoutes$ = $func(({ set }, config: Route[], signal: AbortSignal) => {
+  set(inertnalRouteConfig$, config);
+  set(loadRoute$, signal);
 
   window.addEventListener(
     'popstate',
     () => {
-      set(reloadPathnameAtom, (x) => x + 1);
-      set(loadRouteEffect, signal);
+      set(reloadPathname$, (x) => x + 1);
+      set(loadRoute$, signal);
     },
     { signal },
   );

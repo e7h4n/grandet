@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client';
 import './index.css';
 import { createStore, StoreProvider } from 'rippling';
 import { Router } from './components/Router';
-import { mainEffect } from './atoms/main';
+import { main$ } from './atoms/main';
 
 async function prepare() {
   if (import.meta.env.DEV) {
@@ -22,7 +22,7 @@ void prepare().then(() => {
 
   const rootAbortController = new AbortController();
   const store = createStore();
-  store.set(mainEffect, rootAbortController.signal);
+  store.set(main$, rootAbortController.signal);
 
   createRoot(document.getElementById('root')!).render(
     <StrictMode>

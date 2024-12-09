@@ -1,22 +1,22 @@
 import { StrictMode } from 'react';
-import { $effect, createStore, StoreProvider } from 'rippling';
+import { $func, createStore, StoreProvider } from 'rippling';
 import { expect, it, vi } from 'vitest';
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { Router } from '../../components/Router';
-import { initRoutesEffect, navigateEffect } from '../route';
-import { updatePageEffect } from '../react-router';
+import { initRoutes$, navigate$ } from '../route';
+import { updatePage$ } from '../react-router';
 
 it('routes should render correct page', async () => {
   const controller = new AbortController();
   const store = createStore();
 
   store.set(
-    initRoutesEffect,
+    initRoutes$,
     [
       {
         path: '/',
-        setup: $effect((_, set) => {
-          set(updatePageEffect, <div>home</div>);
+        setup: $func(({ set }) => {
+          set(updatePage$, <div>home</div>);
         }),
       },
     ],
@@ -41,18 +41,18 @@ it('navigate should goto correct page', async () => {
   const store = createStore();
 
   store.set(
-    initRoutesEffect,
+    initRoutes$,
     [
       {
         path: '/',
-        setup: $effect((_, set) => {
-          set(updatePageEffect, <div>home</div>);
+        setup: $func(({ set }) => {
+          set(updatePage$, <div>home</div>);
         }),
       },
       {
         path: '/login',
-        setup: $effect((_, set) => {
-          set(updatePageEffect, <div>login</div>);
+        setup: $func(({ set }) => {
+          set(updatePage$, <div>login</div>);
         }),
       },
     ],
@@ -67,7 +67,7 @@ it('navigate should goto correct page', async () => {
     </StrictMode>,
   );
 
-  store.set(navigateEffect, '/login');
+  store.set(navigate$, '/login');
 
   expect(await screen.findByText('login')).toBeTruthy();
   cleanup();
@@ -79,18 +79,18 @@ it('history back should goto correct page', async () => {
   const store = createStore();
 
   store.set(
-    initRoutesEffect,
+    initRoutes$,
     [
       {
         path: '/',
-        setup: $effect((_, set) => {
-          set(updatePageEffect, <div>home</div>);
+        setup: $func(({ set }) => {
+          set(updatePage$, <div>home</div>);
         }),
       },
       {
         path: '/login',
-        setup: $effect((_, set) => {
-          set(updatePageEffect, <div>login</div>);
+        setup: $func(({ set }) => {
+          set(updatePage$, <div>login</div>);
         }),
       },
     ],
@@ -105,7 +105,7 @@ it('history back should goto correct page', async () => {
     </StrictMode>,
   );
 
-  store.set(navigateEffect, '/login');
+  store.set(navigate$, '/login');
 
   expect(await screen.findByText('login')).toBeTruthy();
 
