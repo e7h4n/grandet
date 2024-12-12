@@ -1,7 +1,7 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import './index.css';
-import { createStore, StoreProvider } from 'rippling';
+import { createDebugStore, StoreProvider, setupDevtoolsInterceptor, createStore, Store } from 'rippling';
 import { Router } from './components/Router';
 import { main$ } from './atoms/main';
 
@@ -21,7 +21,14 @@ void prepare().then(() => {
   }
 
   const rootAbortController = new AbortController();
-  const store = createStore();
+  let store: Store;
+  if (import.meta.env.DEV) {
+    const interceptor = setupDevtoolsInterceptor(window);
+    store = createDebugStore(interceptor);
+  } else {
+    store = createStore();
+  }
+
   store.set(main$, rootAbortController.signal);
 
   createRoot(document.getElementById('root')!).render(

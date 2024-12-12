@@ -44,6 +44,7 @@
     "msw": "^2.6.8",
     "playwright": "^1.49.0",
     "prettier": "^3.4.2",
+    "rippling-babel": "^1.2.0",
     "typescript": "^5.5.3",
     "typescript-eslint": "^8.0.1",
     "vite": "^5.4.1",
