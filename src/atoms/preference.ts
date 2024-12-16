@@ -1,7 +1,8 @@
 import { $computed, $func, $value } from 'rippling';
 import { user$ } from './auth';
 import { interval } from 'signal-timers';
-import { refresh$, reloadCalendarChart$, reloadNavChart$ } from './portfolio';
+import { refresh$ as portfolioRefresh$, reloadCalendarChart$, reloadNavChart$ } from './portfolio';
+import { refresh$ as balanceRefresh$ } from './balance';
 const internalRefresh$ = $value(0);
 
 export const showDetailNumber$ = $computed((get) => {
@@ -56,7 +57,8 @@ export const beginAutoRefresh$ = $func(async ({ get, set }, signal?: AbortSignal
 
   interval(
     async () => {
-      set(refresh$);
+      set(portfolioRefresh$);
+      set(balanceRefresh$);
       set(reloadNavChart$, controller.signal);
       set(reloadCalendarChart$, controller.signal);
     },
