@@ -1,10 +1,11 @@
-import { useGet, useLoadable, useSet } from 'rippling';
+import { useGet, useLastLoadable, useSet } from 'rippling';
 import { pnl$, irrSummary$, navIndex$ } from '../atoms/portfolio';
 import { Card, CardContent, IconButton, Skeleton, Typography } from '@mui/material';
 import Grid from '@mui/material/Grid2';
 import { setShowDetailNumber$, showDetailNumber$ } from '../atoms/preference';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import { current$ } from '../atoms/balance';
 
 function SkeletonCard() {
   return (
@@ -21,13 +22,19 @@ function SkeletonCard() {
 }
 
 export default function Summary() {
-  const pnl_ = useLoadable(pnl$);
-  const irrSummary_ = useLoadable(irrSummary$);
-  const navIndex_ = useLoadable(navIndex$);
+  const pnl_ = useLastLoadable(pnl$);
+  const irrSummary_ = useLastLoadable(irrSummary$);
+  const navIndex_ = useLastLoadable(navIndex$);
+  const current_ = useLastLoadable(current$);
   const showDetailNumber = useGet(showDetailNumber$);
   const updateShowDetailNumber = useSet(setShowDetailNumber$);
 
-  if (pnl_.state !== 'hasData' || irrSummary_.state !== 'hasData' || navIndex_.state !== 'hasData') {
+  if (
+    pnl_.state !== 'hasData' ||
+    irrSummary_.state !== 'hasData' ||
+    navIndex_.state !== 'hasData' ||
+    current_.state !== 'hasData'
+  ) {
     return (
       <Grid container spacing={2}>
         <SkeletonCard />
@@ -70,6 +77,12 @@ export default function Summary() {
 
   return (
     <Grid container spacing={2}>
+      {renderCard(
+        'Current',
+        (current_.data[1] as number).toFixed(2),
+        (current_.data[1] as number) > 0,
+        `Current at ${(current_.data[0] as Date).toLocaleDateString()}`,
+      )}
       <Grid size={{ xs: 6, md: 3 }}>
         <Card>
           <CardContent>
@@ -102,13 +115,7 @@ export default function Summary() {
         'Nav Index',
         latestNavIndex[1].toFixed(2),
         latestNavIndex[1] > 0,
-        `Latest NAV Index in ${latestNavIndex[0].toLocaleDateString()}`,
-      )}
-      {renderCard(
-        'Yearly NAV',
-        `${(Math.pow(latestNavIndex[1], 1 / irrData.years) * 100 - 100).toFixed(2)}%`,
-        latestNavIndex[1] > 0,
-        `Total returns over ${irrData.years.toFixed(1)} years`,
+        `Yearly ${(Math.pow(latestNavIndex[1], 1 / irrData.years) * 100 - 100).toFixed(2)}% over ${irrData.years.toFixed(1)} years`,
       )}
       {renderCard(
         'IRR',

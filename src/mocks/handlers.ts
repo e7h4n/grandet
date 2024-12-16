@@ -6,7 +6,7 @@ import cashFlows from './cash_flows.json';
 import investments from './investments.json';
 import pnl from './pnl.json';
 import irrSummary from './irr_summary.json';
-
+import current from './current.json';
 export const handlers = [
   http.get('http://127.0.0.1:5000/portfolio/nav_index', () => {
     return HttpResponse.json(navIndex);
@@ -28,5 +28,8 @@ export const handlers = [
   }),
   http.get('http://127.0.0.1:5000/portfolio/irr_summary', () => {
     return HttpResponse.json(irrSummary);
+  }),
+  http.get('http://127.0.0.1:5000/balance/current', () => {
+    return HttpResponse.json(current);
   }),
 ];

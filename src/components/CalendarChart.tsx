@@ -1,14 +1,14 @@
-import { useLayoutEffect, useRef, HTMLAttributes } from 'react';
-import { useLoadable, useSet } from 'rippling';
+import { useRef, HTMLAttributes, useEffect } from 'react';
+import { useLastLoadable, useSet } from 'rippling';
 import { calendarReturns$, renderCalendarReturns$ } from '../atoms/portfolio';
 import { Skeleton, Typography } from '@mui/material';
 
 export default function CalendarChart(props: HTMLAttributes<HTMLDivElement>) {
-  const data_ = useLoadable(calendarReturns$);
+  const data_ = useLastLoadable(calendarReturns$);
   const elemRef = useRef<HTMLDivElement>(null);
   const renderChart = useSet(renderCalendarReturns$);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (!elemRef.current) return;
     const controller = new AbortController();
     renderChart(elemRef.current, controller.signal);

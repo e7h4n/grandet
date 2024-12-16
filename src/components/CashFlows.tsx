@@ -1,5 +1,5 @@
 import { HTMLAttributes } from 'react';
-import { useGet, useLoadable } from 'rippling';
+import { useGet, useLastLoadable } from 'rippling';
 import { cashFlows } from '../atoms/portfolio';
 import { Skeleton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import { showDetailNumber$ } from '../atoms/preference';
@@ -9,7 +9,7 @@ function investmentName(name: string) {
   return parts[parts.length - 1];
 }
 export default function CashFlows(props: HTMLAttributes<HTMLDivElement>) {
-  const loadableCashFlows = useLoadable(cashFlows);
+  const loadableCashFlows = useLastLoadable(cashFlows);
   const showDetailNumber = useGet(showDetailNumber$);
   if (loadableCashFlows.state !== 'hasData') {
     return <Skeleton />;

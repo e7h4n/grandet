@@ -4,13 +4,13 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import { useLoadable } from 'rippling';
+import { useLastLoadable } from 'rippling';
 import { cumulativeReturns$ } from '../atoms/portfolio';
 import { HTMLAttributes } from 'react';
 import { Skeleton, Typography } from '@mui/material';
 
 export default function CumulativeReturns(props: HTMLAttributes<HTMLDivElement>) {
-  const tableData = useLoadable(cumulativeReturns$);
+  const tableData = useLastLoadable(cumulativeReturns$);
   if (tableData.state !== 'hasData') {
     return <Skeleton />;
   }

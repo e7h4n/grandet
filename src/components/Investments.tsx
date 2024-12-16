@@ -1,5 +1,5 @@
 import { HTMLAttributes } from 'react';
-import { useGet, useLoadable } from 'rippling';
+import { useGet, useLastLoadable } from 'rippling';
 import { investments$ } from '../atoms/portfolio';
 import Grid from '@mui/material/Grid2';
 import { Skeleton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
@@ -54,7 +54,7 @@ function InvestmentList(props: HTMLAttributes<HTMLDivElement> & { investments: I
 }
 
 export default function Investments(props: HTMLAttributes<HTMLDivElement>) {
-  const loadableInvestments = useLoadable(investments$);
+  const loadableInvestments = useLastLoadable(investments$);
   if (loadableInvestments.state !== 'hasData') {
     return <Skeleton />;
   }

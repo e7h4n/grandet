@@ -10,6 +10,8 @@ export const refresh$ = $func(({ set }) => {
 });
 
 export const navIndex$ = $computed(async (get) => {
+  get(internalRefresh$);
+
   const headers = await get(sessionHeaders$);
   const apiHost = get(apiHost$);
   const resp = await fetch(apiHost + '/portfolio/nav_index' + window.location.search, { headers });
