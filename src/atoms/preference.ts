@@ -57,12 +57,16 @@ export const beginAutoRefresh$ = $func(async ({ get, set }, signal?: AbortSignal
 
   interval(
     async () => {
-      set(portfolioRefresh$);
-      set(balanceRefresh$);
-      set(reloadNavChart$, controller.signal);
-      set(reloadCalendarChart$, controller.signal);
+      set(refresh$, controller.signal);
     },
     1000 * 60 * 10, // 10 minutes
     { signal: AbortSignal.any([signal, controller.signal].filter(Boolean) as AbortSignal[]) },
   );
+});
+
+export const refresh$ = $func(({ set }, signal?: AbortSignal) => {
+  set(portfolioRefresh$);
+  set(balanceRefresh$);
+  set(reloadNavChart$, signal);
+  set(reloadCalendarChart$, signal);
 });

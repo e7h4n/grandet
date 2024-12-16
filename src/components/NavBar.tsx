@@ -7,7 +7,13 @@ import { $func, $value, useGet, useLastLoadable, useSet } from 'rippling';
 import { authed$, logout$, user$ } from '../atoms/auth';
 import { Avatar, Button, FormControlLabel, Menu, MenuItem, Switch, Tooltip } from '@mui/material';
 import React, { HTMLAttributes } from 'react';
-import { autoRefresh$, setShowDetailNumber$, showDetailNumber$, updateAutoRefresh$ } from '../atoms/preference';
+import {
+  autoRefresh$,
+  refresh$,
+  setShowDetailNumber$,
+  showDetailNumber$,
+  updateAutoRefresh$,
+} from '../atoms/preference';
 import { navigate$ } from '../atoms/route';
 import MenuIcon from '@mui/icons-material/Menu';
 
@@ -108,6 +114,7 @@ export default function NavBar(props: HTMLAttributes<HTMLDivElement>) {
   const handleOpenNavMenu = useSet(handleOpenNavMenu$);
   const handleCloseNavMenu = useSet(handleCloseNavMenu$);
   const anchorElNav = useGet(anchorElNav$);
+  const refresh = useSet(refresh$);
 
   return (
     <Box sx={{ flexGrow: 1 }} {...props}>
@@ -165,6 +172,14 @@ export default function NavBar(props: HTMLAttributes<HTMLDivElement>) {
                 {item.label}
               </Button>
             ))}
+            <Button
+              sx={{ my: 2, color: 'white', display: 'block' }}
+              onClick={() => {
+                refresh();
+              }}
+            >
+              <Typography textAlign="center">Refresh</Typography>
+            </Button>
           </Box>
           <UserBox />
         </Toolbar>

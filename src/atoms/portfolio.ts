@@ -350,9 +350,9 @@ export const calendarReturnsChartOptions$ = $computed(async (get) => {
 
 const navChart$ = $value<echarts.ECharts | undefined>(undefined);
 
-export const reloadNavChart$ = $func(async ({ get }, signal: AbortSignal) => {
+export const reloadNavChart$ = $func(async ({ get }, signal?: AbortSignal) => {
   const options = await get(navIndexChartOptions$);
-  signal.throwIfAborted();
+  signal?.throwIfAborted();
 
   get(navChart$)?.setOption(options);
 });
@@ -377,9 +377,9 @@ export const renderNavIndex$ = $func(async ({ get, set }, elem: HTMLDivElement, 
 
 const calendarChart$ = $value<echarts.ECharts | undefined>(undefined);
 
-export const reloadCalendarChart$ = $func(async ({ get }, signal: AbortSignal) => {
+export const reloadCalendarChart$ = $func(async ({ get }, signal?: AbortSignal) => {
   const options = await get(calendarReturnsChartOptions$);
-  signal.throwIfAborted();
+  signal?.throwIfAborted();
 
   get(calendarChart$)?.setOption(options);
 });
