@@ -20,6 +20,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 
 const MENU_ITEMS = [
   { path: '/', label: 'Dashboard' },
+  { path: '/budget', label: 'Budget' },
   { path: '/cash_flows', label: 'Cash Flows' },
   { path: '/investments', label: 'Investments' },
   { path: '/irr', label: 'IRR' },

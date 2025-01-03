@@ -3,6 +3,8 @@ import { user$ } from './auth';
 import { interval } from 'signal-timers';
 import { refresh$ as portfolioRefresh$, reloadCalendarChart$, reloadNavChart$ } from './portfolio';
 import { refresh$ as balanceRefresh$ } from './balance';
+import { refresh$ as budgetRefresh$ } from './budget';
+
 const internalRefresh$ = state(0);
 
 export const showDetailNumber$ = computed((get) => {
@@ -67,6 +69,7 @@ export const beginAutoRefresh$ = command(async ({ get, set }, signal?: AbortSign
 export const refresh$ = command(({ set }, signal?: AbortSignal) => {
   set(portfolioRefresh$);
   set(balanceRefresh$);
+  set(budgetRefresh$);
   set(reloadNavChart$, signal);
   set(reloadCalendarChart$, signal);
 });

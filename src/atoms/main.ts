@@ -10,6 +10,7 @@ import CashFlowsPage from '../pages/CashFlows';
 import { InvestmentsPage } from '../pages/Investments';
 import { IrrPage } from '../pages/Irr';
 import { initRoutes$, navigate$ } from './route';
+import { BudgetPage } from '../pages/Budget';
 
 const authGuard$ = command(async ({ get, set }, signal: AbortSignal) => {
   set(updatePage$, createElement(SplashPage));
@@ -65,6 +66,14 @@ export const main$ = command(({ set }, signal: AbortSignal) => {
         path: '/login',
         setup: command(({ set }) => {
           set(updatePage$, createElement(LoginPage));
+        }),
+      },
+      {
+        path: '/budget',
+        setup: command(({ set }) => {
+          if (!set(authGuard$, signal)) return;
+
+          set(updatePage$, createElement(BudgetPage));
         }),
       },
     ],
