@@ -1,12 +1,12 @@
-import { $computed, $func, $value, Func } from 'rippling';
+import { computed, command, state, Command } from 'ccstate';
 
-const reloadPathname$ = $value(0);
-const pathname$ = $computed((get) => {
+const reloadPathname$ = state(0);
+const pathname$ = computed((get) => {
   get(reloadPathname$);
   return window.location.pathname;
 });
 
-export const navigate$ = $func(({ set }, pathname: string, signal?: AbortSignal) => {
+export const navigate$ = command(({ set }, pathname: string, signal?: AbortSignal) => {
   window.history.pushState({}, '', pathname);
   set(reloadPathname$, (x) => x + 1);
   set(loadRoute$, signal);
@@ -14,11 +14,11 @@ export const navigate$ = $func(({ set }, pathname: string, signal?: AbortSignal)
 
 interface Route {
   path: string;
-  setup: Func<void, [AbortSignal]>;
+  setup: Command<void, [AbortSignal]>;
 }
 
-const inertnalRouteConfig$ = $value<Route[] | undefined>(undefined);
-export const currentRoute$ = $computed((get) => {
+const inertnalRouteConfig$ = state<Route[] | undefined>(undefined);
+export const currentRoute$ = computed((get) => {
   const config = get(inertnalRouteConfig$);
   if (!config) {
     return null;
@@ -31,8 +31,8 @@ export const currentRoute$ = $computed((get) => {
   return match;
 });
 
-const loadRouteController$ = $value<AbortController | undefined>(undefined);
-const loadRoute$ = $func(({ get, set }, signal?: AbortSignal) => {
+const loadRouteController$ = state<AbortController | undefined>(undefined);
+const loadRoute$ = command(({ get, set }, signal?: AbortSignal) => {
   get(loadRouteController$)?.abort();
   const currentRoute = get(currentRoute$);
   if (!currentRoute) {
@@ -43,7 +43,7 @@ const loadRoute$ = $func(({ get, set }, signal?: AbortSignal) => {
   set(currentRoute.setup, AbortSignal.any([controller.signal, signal].filter(Boolean) as AbortSignal[]));
 });
 
-export const initRoutes$ = $func(({ set }, config: Route[], signal: AbortSignal) => {
+export const initRoutes$ = command(({ set }, config: Route[], signal: AbortSignal) => {
   set(inertnalRouteConfig$, config);
   set(loadRoute$, signal);
 

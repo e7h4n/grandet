@@ -1,9 +1,9 @@
-import { $computed, $func, $value } from 'rippling';
+import { computed, command, state } from 'ccstate';
 import Corbado from '@corbado/web-js';
 import { navigate$ } from './route';
 
-const reload$ = $value(0);
-const corbado$ = $computed(async (get) => {
+const reload$ = state(0);
+const corbado$ = computed(async (get) => {
   get(reload$);
 
   return await Corbado.load({
@@ -11,7 +11,7 @@ const corbado$ = $computed(async (get) => {
   }).then(() => Corbado);
 });
 
-export const showAuthPage$ = $func(async ({ get, set }, elem: HTMLDivElement, signal: AbortSignal) => {
+export const showAuthPage$ = command(async ({ get, set }, elem: HTMLDivElement, signal: AbortSignal) => {
   const corbado = await get(corbado$);
   corbado.mountAuthUI(elem, {
     onLoggedIn: () => {
@@ -24,7 +24,7 @@ export const showAuthPage$ = $func(async ({ get, set }, elem: HTMLDivElement, si
   });
 });
 
-export const user$ = $computed(async (get) => {
+export const user$ = computed(async (get) => {
   const corbado = await get(corbado$);
   if (!corbado.user) {
     return undefined;
@@ -32,28 +32,28 @@ export const user$ = $computed(async (get) => {
   return (await corbado.getFullUser()).unwrap();
 });
 
-export const authed$ = $computed(async (get) => {
+export const authed$ = computed(async (get) => {
   return !!(await get(user$));
 });
 
-export const onAuth$ = $func(({ set }) => {
+export const onAuth$ = command(({ set }) => {
   set(reload$, (x) => x + 1);
   set(navigate$, '/');
 });
 
-export const logout$ = $func(async ({ get, set }) => {
+export const logout$ = command(async ({ get, set }) => {
   const corbado = await get(corbado$);
   await corbado.logout();
   set(reload$, (x) => x + 1);
   set(navigate$, '/login');
 });
 
-export const sessionToken$ = $computed(async (get) => {
+export const sessionToken$ = computed(async (get) => {
   const corbado = await get(corbado$);
   return corbado.sessionToken;
 });
 
-export const sessionHeaders$ = $computed(async (get) => {
+export const sessionHeaders$ = computed(async (get) => {
   const token = await get(sessionToken$);
   const headers = new Headers();
   headers.append('Authorization', `Bearer ${token}`);

@@ -26,6 +26,12 @@ importers:
       axios:
         specifier: ^1.7.9
         version: 1.7.9
+      ccstate:
+        specifier: ^4.3.0
+        version: 4.3.0
+      ccstate-react:
+        specifier: ^4.3.0
+        version: 4.3.0(@types/react@18.3.14)(react@18.3.1)
       echarts:
         specifier: ^5.5.1
         version: 5.5.1
@@ -35,9 +41,6 @@ importers:
       react-dom:
         specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
-      rippling:
-        specifier: ^1.6.0
-        version: 1.6.0(@types/react@18.3.14)(react@18.3.1)
       signal-timers:
         specifier: ^1.0.4
         version: 1.0.4
@@ -66,6 +69,9 @@ importers:
       '@vitest/browser':
         specifier: ^2.1.8
         version: 2.1.8(@types/node@22.10.1)(playwright@1.49.0)(typescript@5.7.2)(vite@5.4.11(@types/node@22.10.1))(vitest@2.1.8)
+      ccstate-babel:
+        specifier: ^4.3.0
+        version: 4.3.0
       eslint:
         specifier: ^9.9.0
         version: 9.16.0
@@ -102,9 +108,6 @@ importers:
       prettier:
         specifier: ^3.4.2
         version: 3.4.2
-      rippling-babel:
-        specifier: ^1.2.0
-        version: 1.2.0
       typescript:
         specifier: ^5.5.3
         version: 5.7.2
@@ -1414,6 +1417,23 @@ packages:
 
   caniuse-lite@1.0.30001687:
     resolution: {integrity: sha512-0S/FDhf4ZiqrTUiQ39dKeUjYRjkv7lOZU1Dgif2rIqrTzX/1wV2hfKu9TOm1IHkdSijfLswxTFzl/cvir+SLSQ==}
+
+  ccstate-babel@4.3.0:
+    resolution: {integrity: sha512-8azOTCki4eqEtT5NIqcx7PENMuu3a/7H4NveM8Qn0E8GeNDkwmngTYE3o2ziCroBZSCQLnSvADmucSD9idf2uA==}
+
+  ccstate-react@4.3.0:
+    resolution: {integrity: sha512-pBMcwJEGMC58A1D0iCfqVD4HSx+weHq0CKoopW9zPPST6SSK4QmqFQ+J5oHRzQfM9msIarKGhtrz8LNxe21lEQ==}
+    peerDependencies:
+      '@types/react': '>=17.0.0'
+      react: '>=17.0.0'
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+      react:
+        optional: true
+
+  ccstate@4.3.0:
+    resolution: {integrity: sha512-tWU9CSXy6tlS2jHxY6MHwNhmw0gLJhxtbe9qog9WrAvQWn1eumSsikXSoyfI4h84WL4n5jvMkevIOO7I8J1LSA==}
 
   chai@5.1.2:
     resolution: {integrity: sha512-aGtmf24DW6MLHHG5gCx4zaI3uBq3KRtxeVs0DjFH6Z0rDNbsvTxFASFvdj79pxjxZ8/5u3PIiN3IwEIQkiiuPw==}
@@ -2746,20 +2766,6 @@ packages:
 
   rfdc@1.4.1:
     resolution: {integrity: sha512-q1b3N5QkRUWUl7iyylaaj3kOpIT0N2i9MqIEQXP73GVsN9cw3fdx8X63cEmWhJGi2PPCF23Ijp7ktmd39rawIA==}
-
-  rippling-babel@1.2.0:
-    resolution: {integrity: sha512-qRKDM7MEg5A6ZHySdOwWs2VAy6Vf2olEE7tQEm4IwhyCjHBFHl/il8tHwFZsPANrzCUytYEJwVK587iI8B3GPg==}
-
-  rippling@1.6.0:
-    resolution: {integrity: sha512-c6CBQxxbQ4NRiMlntzE/7X02vu6mTd8dGQFpjiKAJa9xcbAHB/jMHuOHvAd7TZuYfzVOxNy/aKY/6D5HfusVwg==}
-    peerDependencies:
-      '@types/react': '>=17.0.0'
-      react: '>=17.0.0'
-    peerDependenciesMeta:
-      '@types/react':
-        optional: true
-      react:
-        optional: true
 
   rollup@2.79.2:
     resolution: {integrity: sha512-fS6iqSPZDs3dr/y7Od6y5nha8dW1YnbgtsyotCVvoFGKbERG++CVRFv1meyGDE1SNItQA8BrnCw7ScdAhRJ3XQ==}
@@ -4733,6 +4739,17 @@ snapshots:
 
   caniuse-lite@1.0.30001687: {}
 
+  ccstate-babel@4.3.0: {}
+
+  ccstate-react@4.3.0(@types/react@18.3.14)(react@18.3.1):
+    dependencies:
+      ccstate: 4.3.0
+    optionalDependencies:
+      '@types/react': 18.3.14
+      react: 18.3.1
+
+  ccstate@4.3.0: {}
+
   chai@5.1.2:
     dependencies:
       assertion-error: 2.0.1
@@ -6040,13 +6057,6 @@ snapshots:
   reusify@1.0.4: {}
 
   rfdc@1.4.1: {}
-
-  rippling-babel@1.2.0: {}
-
-  rippling@1.6.0(@types/react@18.3.14)(react@18.3.1):
-    optionalDependencies:
-      '@types/react': 18.3.14
-      react: 18.3.1
 
   rollup@2.79.2:
     optionalDependencies:

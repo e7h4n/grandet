@@ -8,7 +8,7 @@ export default defineConfig({
       babel: {
         presets: [
           [
-            'rippling-babel/preset',
+            'ccstate-babel/preset',
             {
               projectRoot: __dirname,
             },

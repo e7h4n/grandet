@@ -1,7 +1,8 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import './index.css';
-import { createDebugStore, StoreProvider, setupDevtoolsInterceptor, createStore, Store } from 'rippling';
+import { createDebugStore, createStore, Store } from 'ccstate';
+import { StoreProvider } from 'ccstate-react';
 import { Router } from './components/Router';
 import { main$ } from './atoms/main';
 
@@ -23,8 +24,7 @@ void prepare().then(() => {
   const rootAbortController = new AbortController();
   let store: Store;
   if (import.meta.env.DEV) {
-    const interceptor = setupDevtoolsInterceptor(window);
-    store = createDebugStore(interceptor);
+    store = createDebugStore();
   } else {
     store = createStore();
   }

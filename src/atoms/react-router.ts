@@ -1,12 +1,12 @@
 import { ReactNode } from 'react';
-import { $computed, $func, $value } from 'rippling';
+import { computed, command, state } from 'ccstate';
 
-const internalPage$ = $value<ReactNode | undefined>(undefined);
+const internalPage$ = state<ReactNode | undefined>(undefined);
 
-export const page$ = $computed((get) => {
+export const page$ = computed((get) => {
   return get(internalPage$);
 });
 
-export const updatePage$ = $func(({ set }, page: ReactNode) => {
+export const updatePage$ = command(({ set }, page: ReactNode) => {
   set(internalPage$, page);
 });

@@ -1,16 +1,16 @@
-import { $computed, $func, $value } from 'rippling';
+import { computed, command, state } from 'ccstate';
 import { user$ } from './auth';
 import { interval } from 'signal-timers';
 import { refresh$ as portfolioRefresh$, reloadCalendarChart$, reloadNavChart$ } from './portfolio';
 import { refresh$ as balanceRefresh$ } from './balance';
-const internalRefresh$ = $value(0);
+const internalRefresh$ = state(0);
 
-export const showDetailNumber$ = $computed((get) => {
+export const showDetailNumber$ = computed((get) => {
   get(internalRefresh$);
   return localStorage.getItem('showDetailNumber') === 'true';
 });
 
-export const setShowDetailNumber$ = $func(({ set }, status: boolean) => {
+export const setShowDetailNumber$ = command(({ set }, status: boolean) => {
   if (status) {
     localStorage.setItem('showDetailNumber', 'true');
   } else {
@@ -19,12 +19,12 @@ export const setShowDetailNumber$ = $func(({ set }, status: boolean) => {
   set(internalRefresh$, (x) => x + 1);
 });
 
-export const autoRefresh$ = $computed((get) => {
+export const autoRefresh$ = computed((get) => {
   get(internalRefresh$);
   return localStorage.getItem('autoRefresh') === 'true';
 });
 
-export const updateAutoRefresh$ = $func(({ get, set }, isEnabled: boolean) => {
+export const updateAutoRefresh$ = command(({ get, set }, isEnabled: boolean) => {
   if (isEnabled) {
     localStorage.setItem('autoRefresh', 'true');
   } else {
@@ -38,9 +38,9 @@ export const updateAutoRefresh$ = $func(({ get, set }, isEnabled: boolean) => {
   }
 });
 
-const autoReloadController$ = $value<AbortController | undefined>(undefined);
+const autoReloadController$ = state<AbortController | undefined>(undefined);
 
-export const beginAutoRefresh$ = $func(async ({ get, set }, signal?: AbortSignal) => {
+export const beginAutoRefresh$ = command(async ({ get, set }, signal?: AbortSignal) => {
   const isEnabled = get(autoRefresh$);
   if (!isEnabled) {
     return;
@@ -64,7 +64,7 @@ export const beginAutoRefresh$ = $func(async ({ get, set }, signal?: AbortSignal
   );
 });
 
-export const refresh$ = $func(({ set }, signal?: AbortSignal) => {
+export const refresh$ = command(({ set }, signal?: AbortSignal) => {
   set(portfolioRefresh$);
   set(balanceRefresh$);
   set(reloadNavChart$, signal);

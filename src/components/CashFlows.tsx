@@ -1,5 +1,5 @@
 import { HTMLAttributes } from 'react';
-import { useGet, useLastLoadable } from 'rippling';
+import { useGet, useLastLoadable } from 'ccstate-react';
 import { cashFlows } from '../atoms/portfolio';
 import { Skeleton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import { showDetailNumber$ } from '../atoms/preference';

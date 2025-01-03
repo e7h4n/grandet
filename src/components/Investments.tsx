@@ -1,5 +1,5 @@
 import { HTMLAttributes } from 'react';
-import { useGet, useLastLoadable } from 'rippling';
+import { useGet, useLastLoadable } from 'ccstate-react';
 import { investments$ } from '../atoms/portfolio';
 import Grid from '@mui/material/Grid2';
 import { Skeleton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';

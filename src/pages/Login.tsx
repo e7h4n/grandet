@@ -1,4 +1,4 @@
-import { useSet } from 'rippling';
+import { useSet } from 'ccstate-react';
 import { showAuthPage$ } from '../atoms/auth';
 import { useEffect, useRef } from 'react';
 

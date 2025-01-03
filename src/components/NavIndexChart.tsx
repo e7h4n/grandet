@@ -1,5 +1,5 @@
 import { useRef, HTMLAttributes, useEffect } from 'react';
-import { useLastLoadable, useSet } from 'rippling';
+import { useLastLoadable, useSet } from 'ccstate-react';
 import { navIndex$, renderNavIndex$ } from '../atoms/portfolio';
 import { Skeleton, Typography } from '@mui/material';
 

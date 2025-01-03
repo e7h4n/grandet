@@ -1,14 +1,14 @@
-import { $computed, $func, $value } from 'rippling';
+import { computed, command, state } from 'ccstate';
 import { sessionHeaders$ } from './auth';
 import { apiHost$ } from './api';
 
-const internalRefresh$ = $value(0);
+const internalRefresh$ = state(0);
 
-export const refresh$ = $func(({ set }) => {
+export const refresh$ = command(({ set }) => {
   set(internalRefresh$, (x) => x + 1);
 });
 
-export const current$ = $computed(async (get) => {
+export const current$ = computed(async (get) => {
   get(internalRefresh$);
 
   const headers = await get(sessionHeaders$);
@@ -18,7 +18,7 @@ export const current$ = $computed(async (get) => {
   return [new Date(data[0]), parseFloat(data[1])];
 });
 
-export const short_assets$ = $computed(async (get) => {
+export const short_assets$ = computed(async (get) => {
   get(internalRefresh$);
 
   const headers = await get(sessionHeaders$);
@@ -30,7 +30,7 @@ export const short_assets$ = $computed(async (get) => {
   });
 });
 
-export const investments$ = $computed(async (get) => {
+export const investments$ = computed(async (get) => {
   get(internalRefresh$);
 
   const headers = await get(sessionHeaders$);

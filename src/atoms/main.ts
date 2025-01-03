@@ -1,4 +1,4 @@
-import { $func } from 'rippling';
+import { command } from 'ccstate';
 import { beginAutoRefresh$ } from './preference';
 import { updatePage$ } from './react-router';
 import { createElement } from 'react';
@@ -11,7 +11,7 @@ import { InvestmentsPage } from '../pages/Investments';
 import { IrrPage } from '../pages/Irr';
 import { initRoutes$, navigate$ } from './route';
 
-const authGuard$ = $func(async ({ get, set }, signal: AbortSignal) => {
+const authGuard$ = command(async ({ get, set }, signal: AbortSignal) => {
   set(updatePage$, createElement(SplashPage));
   const authed = await get(authed$);
   signal.throwIfAborted();
@@ -24,14 +24,14 @@ const authGuard$ = $func(async ({ get, set }, signal: AbortSignal) => {
   return true;
 });
 
-export const main$ = $func(({ set }, signal: AbortSignal) => {
+export const main$ = command(({ set }, signal: AbortSignal) => {
   set(beginAutoRefresh$, signal);
   set(
     initRoutes$,
     [
       {
         path: '/',
-        setup: $func(async ({ set }) => {
+        setup: command(async ({ set }) => {
           if (!set(authGuard$, signal)) return;
 
           set(updatePage$, createElement(HomePage));
@@ -39,7 +39,7 @@ export const main$ = $func(({ set }, signal: AbortSignal) => {
       },
       {
         path: '/cash_flows',
-        setup: $func(async ({ set }) => {
+        setup: command(async ({ set }) => {
           if (!set(authGuard$, signal)) return;
 
           set(updatePage$, createElement(CashFlowsPage));
@@ -47,7 +47,7 @@ export const main$ = $func(({ set }, signal: AbortSignal) => {
       },
       {
         path: '/investments',
-        setup: $func(async ({ set }) => {
+        setup: command(async ({ set }) => {
           if (!set(authGuard$, signal)) return;
 
           set(updatePage$, createElement(InvestmentsPage));
@@ -55,7 +55,7 @@ export const main$ = $func(({ set }, signal: AbortSignal) => {
       },
       {
         path: '/irr',
-        setup: $func(async ({ set }) => {
+        setup: command(async ({ set }) => {
           if (!set(authGuard$, signal)) return;
 
           set(updatePage$, createElement(IrrPage));
@@ -63,7 +63,7 @@ export const main$ = $func(({ set }, signal: AbortSignal) => {
       },
       {
         path: '/login',
-        setup: $func(({ set }) => {
+        setup: command(({ set }) => {
           set(updatePage$, createElement(LoginPage));
         }),
       },

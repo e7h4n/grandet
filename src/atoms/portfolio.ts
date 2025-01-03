@@ -1,15 +1,15 @@
-import { $computed, $func, $value } from 'rippling';
+import { computed, command, state } from 'ccstate';
 import * as echarts from 'echarts';
 import { sessionHeaders$ } from './auth';
 import { apiHost$ } from './api';
 
-const internalRefresh$ = $value(0);
+const internalRefresh$ = state(0);
 
-export const refresh$ = $func(({ set }) => {
+export const refresh$ = command(({ set }) => {
   set(internalRefresh$, (x) => x + 1);
 });
 
-export const navIndex$ = $computed(async (get) => {
+export const navIndex$ = computed(async (get) => {
   get(internalRefresh$);
 
   const headers = await get(sessionHeaders$);
@@ -21,7 +21,7 @@ export const navIndex$ = $computed(async (get) => {
   });
 });
 
-export const cashFlows = $computed<
+export const cashFlows = computed<
   Promise<
     {
       account: string;
@@ -64,7 +64,7 @@ export const cashFlows = $computed<
   );
 });
 
-export const investments$ = $computed(async (get) => {
+export const investments$ = computed(async (get) => {
   get(internalRefresh$);
 
   const headers = await get(sessionHeaders$);
@@ -74,7 +74,7 @@ export const investments$ = $computed(async (get) => {
   }).then((res) => res.json());
 });
 
-export const pnl$ = $computed(async (get) => {
+export const pnl$ = computed(async (get) => {
   get(internalRefresh$);
 
   const headers = await get(sessionHeaders$);
@@ -91,7 +91,7 @@ export const pnl$ = $computed(async (get) => {
   };
 });
 
-export const calendarReturns$ = $computed(async (get) => {
+export const calendarReturns$ = computed(async (get) => {
   get(internalRefresh$);
 
   const headers = await get(sessionHeaders$);
@@ -103,7 +103,7 @@ export const calendarReturns$ = $computed(async (get) => {
   });
 });
 
-export const cumulativeReturns$ = $computed(async (get) => {
+export const cumulativeReturns$ = computed(async (get) => {
   get(internalRefresh$);
 
   const headers = await get(sessionHeaders$);
@@ -113,7 +113,7 @@ export const cumulativeReturns$ = $computed(async (get) => {
   );
 });
 
-export const irrSummary$ = $computed(async (get) => {
+export const irrSummary$ = computed(async (get) => {
   get(internalRefresh$);
 
   const headers = await get(sessionHeaders$);
@@ -123,7 +123,7 @@ export const irrSummary$ = $computed(async (get) => {
   }).then((res) => res.json());
 });
 
-export const navIndexChartOptions$ = $computed(async (get) => {
+export const navIndexChartOptions$ = computed(async (get) => {
   const data = await get(navIndex$);
 
   return {
@@ -250,7 +250,7 @@ export const navIndexChartOptions$ = $computed(async (get) => {
   };
 });
 
-export const calendarReturnsChartOptions$ = $computed(async (get) => {
+export const calendarReturnsChartOptions$ = computed(async (get) => {
   const data = await get(calendarReturns$);
   return {
     backgroundColor: '#fff',
@@ -348,16 +348,16 @@ export const calendarReturnsChartOptions$ = $computed(async (get) => {
   };
 });
 
-const navChart$ = $value<echarts.ECharts | undefined>(undefined);
+const navChart$ = state<echarts.ECharts | undefined>(undefined);
 
-export const reloadNavChart$ = $func(async ({ get }, signal?: AbortSignal) => {
+export const reloadNavChart$ = command(async ({ get }, signal?: AbortSignal) => {
   const options = await get(navIndexChartOptions$);
   signal?.throwIfAborted();
 
   get(navChart$)?.setOption(options);
 });
 
-export const renderNavIndex$ = $func(async ({ get, set }, elem: HTMLDivElement, signal: AbortSignal) => {
+export const renderNavIndex$ = command(async ({ get, set }, elem: HTMLDivElement, signal: AbortSignal) => {
   const options = await get(navIndexChartOptions$);
   const chart = echarts.init(elem);
   set(navChart$, chart);
@@ -375,16 +375,16 @@ export const renderNavIndex$ = $func(async ({ get, set }, elem: HTMLDivElement, 
   chart.setOption(options);
 });
 
-const calendarChart$ = $value<echarts.ECharts | undefined>(undefined);
+const calendarChart$ = state<echarts.ECharts | undefined>(undefined);
 
-export const reloadCalendarChart$ = $func(async ({ get }, signal?: AbortSignal) => {
+export const reloadCalendarChart$ = command(async ({ get }, signal?: AbortSignal) => {
   const options = await get(calendarReturnsChartOptions$);
   signal?.throwIfAborted();
 
   get(calendarChart$)?.setOption(options);
 });
 
-export const renderCalendarReturns$ = $func(async ({ get, set }, elem: HTMLDivElement, signal: AbortSignal) => {
+export const renderCalendarReturns$ = command(async ({ get, set }, elem: HTMLDivElement, signal: AbortSignal) => {
   const options = await get(calendarReturnsChartOptions$);
   const chart = echarts.init(elem);
   set(calendarChart$, chart);

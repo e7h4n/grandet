@@ -1,5 +1,6 @@
 import { StrictMode } from 'react';
-import { $func, createStore, StoreProvider } from 'rippling';
+import { command, createStore } from 'ccstate';
+import { StoreProvider } from 'ccstate-react';
 import { expect, it, vi } from 'vitest';
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { Router } from '../../components/Router';
@@ -15,7 +16,7 @@ it('routes should render correct page', async () => {
     [
       {
         path: '/',
-        setup: $func(({ set }) => {
+        setup: command(({ set }) => {
           set(updatePage$, <div>home</div>);
         }),
       },
@@ -45,13 +46,13 @@ it('navigate should goto correct page', async () => {
     [
       {
         path: '/',
-        setup: $func(({ set }) => {
+        setup: command(({ set }) => {
           set(updatePage$, <div>home</div>);
         }),
       },
       {
         path: '/login',
-        setup: $func(({ set }) => {
+        setup: command(({ set }) => {
           set(updatePage$, <div>login</div>);
         }),
       },
@@ -83,13 +84,13 @@ it('history back should goto correct page', async () => {
     [
       {
         path: '/',
-        setup: $func(({ set }) => {
+        setup: command(({ set }) => {
           set(updatePage$, <div>home</div>);
         }),
       },
       {
         path: '/login',
-        setup: $func(({ set }) => {
+        setup: command(({ set }) => {
           set(updatePage$, <div>login</div>);
         }),
       },

@@ -17,10 +17,11 @@
     "@mui/icons-material": "^6.1.10",
     "@mui/material": "^6.1.10",
     "axios": "^1.7.9",
+    "ccstate": "^4.3.0",
+    "ccstate-react": "^4.3.0",
     "echarts": "^5.5.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "rippling": "^1.6.0",
     "signal-timers": "^1.0.4"
   },
   "devDependencies": {
@@ -32,6 +33,7 @@
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.1",
     "@vitest/browser": "^2.1.8",
+    "ccstate-babel": "^4.3.0",
     "eslint": "^9.9.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",
@@ -44,7 +46,6 @@
     "msw": "^2.6.8",
     "playwright": "^1.49.0",
     "prettier": "^3.4.2",
-    "rippling-babel": "^1.2.0",
     "typescript": "^5.5.3",
     "typescript-eslint": "^8.0.1",
     "vite": "^5.4.1",

@@ -1,4 +1,4 @@
-import { createStore } from 'rippling';
+import { createStore } from 'ccstate';
 import { expect, it } from 'vitest';
 import { navIndex$ } from '../portfolio';
 

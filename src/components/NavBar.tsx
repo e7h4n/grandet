@@ -3,7 +3,8 @@ import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
-import { $func, $value, useGet, useLastLoadable, useSet } from 'rippling';
+import { command, state } from 'ccstate';
+import { useGet, useLastLoadable, useSet } from 'ccstate-react';
 import { authed$, logout$, user$ } from '../atoms/auth';
 import { Avatar, Button, FormControlLabel, Menu, MenuItem, Switch, Tooltip } from '@mui/material';
 import React, { HTMLAttributes } from 'react';
@@ -24,19 +25,19 @@ const MENU_ITEMS = [
   { path: '/irr', label: 'IRR' },
 ];
 
-const anchorElUser$ = $value<null | HTMLElement>(null);
-const handleOpenUserMenu$ = $func(({ set }, event: React.MouseEvent<HTMLElement>) => {
+const anchorElUser$ = state<null | HTMLElement>(null);
+const handleOpenUserMenu$ = command(({ set }, event: React.MouseEvent<HTMLElement>) => {
   set(anchorElUser$, event.currentTarget);
 });
-const handleCloseUserMenu$ = $func(({ set }) => {
+const handleCloseUserMenu$ = command(({ set }) => {
   set(anchorElUser$, null);
 });
 
-const anchorElNav$ = $value<null | HTMLElement>(null);
-const handleOpenNavMenu$ = $func(({ set }, event: React.MouseEvent<HTMLElement>) => {
+const anchorElNav$ = state<null | HTMLElement>(null);
+const handleOpenNavMenu$ = command(({ set }, event: React.MouseEvent<HTMLElement>) => {
   set(anchorElNav$, event.currentTarget);
 });
-const handleCloseNavMenu$ = $func(({ set }) => {
+const handleCloseNavMenu$ = command(({ set }) => {
   set(anchorElNav$, null);
 });
 

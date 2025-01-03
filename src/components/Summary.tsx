@@ -1,4 +1,4 @@
-import { useGet, useLastLoadable, useSet } from 'rippling';
+import { useGet, useLastLoadable, useSet } from 'ccstate-react';
 import { pnl$, irrSummary$, navIndex$ } from '../atoms/portfolio';
 import { Card, CardContent, IconButton, Skeleton, Typography } from '@mui/material';
 import Grid from '@mui/material/Grid2';
