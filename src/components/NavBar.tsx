@@ -17,7 +17,7 @@ import {
 } from '../atoms/preference';
 import { navigate$ } from '../atoms/route';
 import MenuIcon from '@mui/icons-material/Menu';
-
+import RefreshIcon from '@mui/icons-material/Refresh';
 const MENU_ITEMS = [
   { path: '/', label: 'Dashboard' },
   { path: '/budget', label: 'Budget' },
@@ -180,7 +180,10 @@ export default function NavBar(props: HTMLAttributes<HTMLDivElement>) {
                 refresh();
               }}
             >
-              <Typography textAlign="center">Refresh</Typography>
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <RefreshIcon sx={{ mr: 0.5 }} />
+                <span>Refresh</span>
+              </Box>
             </Button>
           </Box>
           <UserBox />
