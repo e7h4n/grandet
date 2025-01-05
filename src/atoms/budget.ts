@@ -93,8 +93,24 @@ export function createBudgetChart(title: string, accountPrefix: string, budget: 
       },
       xAxis: {
         type: 'time',
+        min: budgetSeries[0][0],
+        max: budgetSeries[1][0],
       },
-      yAxis: [{}, {}],
+      yAxis: [
+        {},
+        {
+          splitLine: {
+            show: false,
+          },
+          scale: true,
+          max: (value: { max: number; min: number }) => {
+            return Math.max(Math.abs(value.max), Math.abs(value.min));
+          },
+          min: (value: { min: number; max: number }) => {
+            return -Math.max(Math.abs(value.max), Math.abs(value.min));
+          },
+        },
+      ],
       tooltip: {
         trigger: 'axis',
         formatter: (params: { data: [Date, number] }[]) => {
@@ -119,6 +135,7 @@ export function createBudgetChart(title: string, accountPrefix: string, budget: 
           step: 'start',
           data: data,
           yAxisIndex: 0,
+          showSymbol: false,
           markLine: {
             data: [
               {
@@ -157,6 +174,14 @@ export function createBudgetChart(title: string, accountPrefix: string, budget: 
         },
       ],
     });
+
+    window.addEventListener(
+      'resize',
+      () => {
+        chart.resize();
+      },
+      { signal },
+    );
   });
 
   return {

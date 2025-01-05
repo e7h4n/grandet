@@ -26,7 +26,7 @@ export function BudgetCharts() {
     <Grid container spacing={2}>
       {budgetCharts.map((chart, idx) => {
         return (
-          <Grid size={{ xs: 12, md: 6 }} key={idx}>
+          <Grid size={{ xs: 12 }} key={idx}>
             <BudgetChart chart={chart} style={{ height: '300px' }}></BudgetChart>
           </Grid>
         );
