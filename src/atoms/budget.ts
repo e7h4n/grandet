@@ -71,7 +71,7 @@ export function createBudgetSeries(accountPrefix: string, budget: number) {
   };
 }
 
-export function createBudgetChart(title: string, accountPrefix: string, budget: number) {
+export function createBudgetChart(accountPrefix: string, budget: number) {
   const { dataSeries$, budgetSeries$, compareSeries$ } = createBudgetSeries(accountPrefix, budget);
 
   const renderChart$ = command(async ({ get }, el: HTMLDivElement, signal: AbortSignal) => {
@@ -87,10 +87,6 @@ export function createBudgetChart(title: string, accountPrefix: string, budget: 
     });
 
     chart.setOption({
-      title: {
-        show: true,
-        text: title,
-      },
       xAxis: {
         type: 'time',
         min: budgetSeries[0][0],
@@ -190,9 +186,9 @@ export function createBudgetChart(title: string, accountPrefix: string, budget: 
 }
 
 export const budgetCharts = [
-  createBudgetChart('Living', 'Expenses:Living:', 400000),
-  createBudgetChart('Outing', 'Expenses:Outing', 400000),
-  createBudgetChart('Education', 'Expenses:Education', 400000),
-  createBudgetChart('Consume', 'Expenses:Consume:', 80000),
-  createBudgetChart('Social', 'Expenses:Social', 50000),
+  createBudgetChart('Expenses:Living:', 400000),
+  createBudgetChart('Expenses:Outing', 400000),
+  createBudgetChart('Expenses:Education', 400000),
+  createBudgetChart('Expenses:Consume:', 80000),
+  createBudgetChart('Expenses:Social', 50000),
 ];
