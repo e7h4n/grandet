@@ -71,7 +71,7 @@ export function createBudgetSeries(accountPrefix: string, budget: number) {
   };
 }
 
-export function createBudgetChart(accountPrefix: string, budget: number) {
+export function createBudgetChart(title: string, accountPrefix: string, budget: number) {
   const { dataSeries$, budgetSeries$, compareSeries$ } = createBudgetSeries(accountPrefix, budget);
 
   const renderChart$ = command(async ({ get }, el: HTMLDivElement, signal: AbortSignal) => {
@@ -169,6 +169,9 @@ export function createBudgetChart(accountPrefix: string, budget: number) {
           silent: true,
         },
       ],
+      grid: {
+        top: 20,
+      },
     });
 
     window.addEventListener(
@@ -180,15 +183,42 @@ export function createBudgetChart(accountPrefix: string, budget: number) {
     );
   });
 
+  const chartTitle$ = computed(async (get) => {
+    const data = await get(dataSeries$);
+    const now = new Date();
+    let latestData = data[0];
+
+    for (const item of data) {
+      if (item[0] <= now && item[0] >= latestData[0]) {
+        latestData = item;
+      } else {
+        break;
+      }
+    }
+
+    const budgetSeries = await get(budgetSeries$);
+    const slope = budgetSeries[1][1] / (budgetSeries[1][0].getTime() - budgetSeries[0][0].getTime());
+    const expected = slope * (latestData[0].getTime() - budgetSeries[0][0].getTime());
+
+    return {
+      title,
+      latestDate: latestData[0],
+      latestValue: latestData[1],
+      expected,
+      diff: expected - latestData[1],
+    };
+  });
+
   return {
     renderChart$,
+    chartTitle$,
   };
 }
 
 export const budgetCharts = [
-  createBudgetChart('Expenses:Living:', 400000),
-  createBudgetChart('Expenses:Outing', 400000),
-  createBudgetChart('Expenses:Education', 400000),
-  createBudgetChart('Expenses:Consume:', 80000),
-  createBudgetChart('Expenses:Social', 50000),
+  createBudgetChart('Living', 'Expenses:Living:', 400000),
+  createBudgetChart('Outing', 'Expenses:Outing', 400000),
+  createBudgetChart('Education', 'Expenses:Education', 400000),
+  createBudgetChart('Consume', 'Expenses:Consume:', 80000),
+  createBudgetChart('Social', 'Expenses:Social', 50000),
 ];
