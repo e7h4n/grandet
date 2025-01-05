@@ -157,7 +157,7 @@ export function BudgetCharts() {
   return (
     <>
       <Grid container spacing={2} sx={{ mb: 4 }}>
-        <Grid size={{ xs: 6 }}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <Card sx={{ height: '100%', p: 2, boxShadow: theme.shadows[2] }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 3 }}>
               <CalendarTodayIcon sx={{ color: theme.palette.primary.main }} />
@@ -269,7 +269,7 @@ export function BudgetCharts() {
             </Grid>
           </Card>
         </Grid>
-        <Grid size={{ xs: 6 }}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <Card sx={{ height: '100%', p: 2, boxShadow: theme.shadows[2] }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 3 }}>
               <TimelineIcon sx={{ color: theme.palette.primary.main }} />
