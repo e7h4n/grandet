@@ -36,14 +36,14 @@ function createBudgetSignals(accountPrefix: string) {
   };
 }
 
-export function createBudgetChart(title: string, accountPrefix: string, budget: number) {
+export function createBudgetSeries(accountPrefix: string, budget: number) {
   const { fetchData$ } = createBudgetSignals(accountPrefix);
 
-  const budgetSeries$ = computed<[[Date, number], [Date, number]]>((get) => {
+  const budgetSeries$ = computed<Promise<[[Date, number], [Date, number]]>>(async (get) => {
     get(internalRefresh$);
-    const now = new Date();
-    const beginDate = new Date(now.getFullYear(), 0, 1);
-    const endDate = new Date(now.getFullYear(), 11, 31);
+    const data = await get(fetchData$);
+    const beginDate = data[0][0];
+    const endDate = new Date(Date.UTC(beginDate.getFullYear(), 11, 31));
     return [
       [beginDate, 0],
       [endDate, budget],
@@ -51,29 +51,34 @@ export function createBudgetChart(title: string, accountPrefix: string, budget: 
   });
 
   const compareSeries$ = computed(async (get) => {
-    const data = await get(fetchData$);
-    const [beginBudget, endBudget] = get(budgetSeries$);
-    const budgetSlope =
-      Number(endBudget[1] - beginBudget[1]) /
-      ((endBudget[0] as Date).getTime() - (beginBudget[0] as Date).getTime()) /
-      (1000 * 60 * 60 * 24);
+    const [beginBudget, endBudget] = await get(budgetSeries$);
     const beginTime = beginBudget[0].getTime();
+    const endTime = endBudget[0].getTime();
+    const budgetSlope = (endBudget[1] - beginBudget[1]) / (endTime - beginTime);
 
+    const data = await get(fetchData$);
     return data.map(([date, actual]) => {
-      const daysSinceBegin = (date.getTime() - beginTime) / (1000 * 60 * 60 * 24);
+      const daysSinceBegin = date.getTime() - beginTime;
       const expected = budgetSlope * daysSinceBegin;
-      return [date, actual - expected];
+      return [date, expected - actual];
     });
   });
 
+  return {
+    dataSeries$: fetchData$,
+    budgetSeries$,
+    compareSeries$,
+  };
+}
+
+export function createBudgetChart(title: string, accountPrefix: string, budget: number) {
+  const { dataSeries$, budgetSeries$, compareSeries$ } = createBudgetSeries(accountPrefix, budget);
+
   const renderChart$ = command(async ({ get }, el: HTMLDivElement, signal: AbortSignal) => {
-    const data = await get(fetchData$);
-    signal.throwIfAborted();
-
+    const data = await get(dataSeries$);
     const compareData = await get(compareSeries$);
+    const budgetSeries = await get(budgetSeries$);
     signal.throwIfAborted();
-
-    const budgetSeries = get(budgetSeries$);
 
     const chart = echarts.init(el);
 
@@ -93,12 +98,16 @@ export function createBudgetChart(title: string, accountPrefix: string, budget: 
       tooltip: {
         trigger: 'axis',
         formatter: (params: { data: [Date, number] }[]) => {
+          const slope = budgetSeries[1][1] / (budgetSeries[1][0].getTime() - budgetSeries[0][0].getTime());
+          const elapsedTime = params[0].data[0].getTime() - budgetSeries[0][0].getTime();
+          const expected = slope * elapsedTime;
+
           return (
-            params[0].data[0] +
+            params[0].data[0].toISOString().slice(0, 10) +
             '<br>Current Period Total: ' +
             formatCurrency(params[0].data[1], 'CNY') +
             '<br>Compare Period Total: ' +
-            formatCurrency(params.length >= 3 ? params[2].data[1] : 0, 'CNY') +
+            formatCurrency(expected, 'CNY') +
             '<br>Diff: ' +
             formatCurrency(params.length >= 2 ? params[1].data[1] : 0, 'CNY')
           );
@@ -128,7 +137,7 @@ export function createBudgetChart(title: string, accountPrefix: string, budget: 
           },
         },
         {
-          type: 'line',
+          type: 'bar',
           areaStyle: {},
           yAxisIndex: 1,
           data: compareData,

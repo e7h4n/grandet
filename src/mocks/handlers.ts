@@ -37,4 +37,17 @@ export const handlers = [
   http.get('http://127.0.0.1:5000/balance/cumulative', () => {
     return HttpResponse.json(cumulative);
   }),
+  http.get('https://pro-8910668211600497001.frontendapi.corbado.io/v2/session-config', () => {
+    return HttpResponse.json({
+      frontendApiUrl: 'https://pro-8910668211600497001.frontendapi.corbado.io',
+      shortSessionCookieConfig: {
+        domain: '',
+        lifetimeSeconds: 86400,
+        path: '/',
+        sameSite: 'lax',
+        secure: false,
+      },
+      useSessionManagement: true,
+    });
+  }),
 ];
