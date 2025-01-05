@@ -5,7 +5,7 @@ import Grid from '@mui/material/Grid2';
 import { Box, Card, CardHeader, Chip, Typography, useTheme } from '@mui/material';
 
 function BudgetChartTitle({ chart }: { chart: ReturnType<typeof createBudgetChart> }) {
-  const title = useLastResolved(chart.chartTitle$);
+  const title = useLastResolved(chart.chartMeta$);
   const theme = useTheme();
 
   if (!title) return null;

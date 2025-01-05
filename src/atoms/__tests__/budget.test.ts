@@ -21,12 +21,12 @@ test('cumulative', async () => {
 });
 
 test('chart title', async () => {
-  const { chartTitle$ } = createBudgetChart('Living', 'Expenses:Living:', 400000);
+  const { chartMeta$ } = createBudgetChart('Living', createBudgetSeries('Expenses:Living:', 400000));
 
   vi.setSystemTime(new Date('2025-08-01'));
 
   const store = createStore();
-  const { latestDate, latestValue, expected, diff, title } = await store.get(chartTitle$);
+  const { latestDate, latestValue, expected, diff, title } = await store.get(chartMeta$);
 
   expect(latestDate.toISOString().slice(0, 10)).toBe('2025-08-01');
   expect(latestValue).toBe(46000);

@@ -71,8 +71,8 @@ export function createBudgetSeries(accountPrefix: string, budget: number) {
   };
 }
 
-export function createBudgetChart(title: string, accountPrefix: string, budget: number) {
-  const { dataSeries$, budgetSeries$, compareSeries$ } = createBudgetSeries(accountPrefix, budget);
+export function createBudgetChart(title: string, series: ReturnType<typeof createBudgetSeries>) {
+  const { dataSeries$, budgetSeries$, compareSeries$ } = series;
 
   const renderChart$ = command(async ({ get }, el: HTMLDivElement, signal: AbortSignal) => {
     const data = await get(dataSeries$);
@@ -183,7 +183,7 @@ export function createBudgetChart(title: string, accountPrefix: string, budget: 
     );
   });
 
-  const chartTitle$ = computed(async (get) => {
+  const chartMeta$ = computed(async (get) => {
     const data = await get(dataSeries$);
     const now = new Date();
     let latestData = data[0];
@@ -211,14 +211,15 @@ export function createBudgetChart(title: string, accountPrefix: string, budget: 
 
   return {
     renderChart$,
-    chartTitle$,
+    chartMeta$,
+    series,
   };
 }
 
 export const budgetCharts = [
-  createBudgetChart('Living', 'Expenses:Living:', 400000),
-  createBudgetChart('Outing', 'Expenses:Outing', 400000),
-  createBudgetChart('Education', 'Expenses:Education', 400000),
-  createBudgetChart('Consume', 'Expenses:Consume:', 80000),
-  createBudgetChart('Social', 'Expenses:Social', 50000),
+  createBudgetChart('Living', createBudgetSeries('Expenses:Living:', 400000)),
+  createBudgetChart('Outing', createBudgetSeries('Expenses:Outing', 400000)),
+  createBudgetChart('Education', createBudgetSeries('Expenses:Education', 400000)),
+  createBudgetChart('Consume', createBudgetSeries('Expenses:Consume:', 80000)),
+  createBudgetChart('Social', createBudgetSeries('Expenses:Social', 50000)),
 ];
