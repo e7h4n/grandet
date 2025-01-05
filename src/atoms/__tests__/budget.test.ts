@@ -1,5 +1,5 @@
 import { expect, test, vi } from 'vitest';
-import { createBudgetChart, createBudgetSeries } from '../budget';
+import { createBudgetChart, createBudgetSeries, summary$ } from '../budget';
 import { createStore } from 'ccstate';
 
 test('cumulative', async () => {
@@ -33,4 +33,18 @@ test('chart title', async () => {
   expect(expected).toBe(232967.03296703295);
   expect(diff).toBe(186967.03296703295);
   expect(title).toBe('Living');
+});
+
+test('expenses', async () => {
+  const store = createStore();
+  const expenses = await store.get(summary$);
+
+  expect(expenses).toEqual({
+    currentDate: expect.any(Date),
+    elspasedTimeRatio: expect.any(Number),
+    currentExpense: expect.any(Number),
+    currentBudget: expect.any(Number),
+    endExpense: expect.any(Number),
+    endBudget: expect.any(Number),
+  });
 });

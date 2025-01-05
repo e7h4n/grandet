@@ -223,3 +223,48 @@ export const budgetCharts = [
   createBudgetChart('Consume', createBudgetSeries('Expenses:Consume:', 80000)),
   createBudgetChart('Social', createBudgetSeries('Expenses:Social', 50000)),
 ];
+
+export const summary$ = computed(async (get) => {
+  const chartData = await Promise.all(
+    budgetCharts.map(async ({ series }) => {
+      const data = await get(series.dataSeries$);
+      const budget = await get(series.budgetSeries$);
+
+      let latestData = data[0];
+      const now = new Date();
+      for (const item of data) {
+        if (item[0] <= now && item[0] >= latestData[0]) {
+          latestData = item;
+        } else {
+          break;
+        }
+      }
+
+      return {
+        budget,
+        latestData,
+        lastData: data[data.length - 1],
+      };
+    }),
+  );
+
+  const currentDate = chartData.map(({ latestData }) => latestData[0]).reduce((a, b) => (a > b ? a : b));
+  const currentExpense = chartData.reduce((total, { latestData }) => total + latestData[1], 0);
+  const endBudget = chartData.reduce((total, { budget }) => total + budget[1][1], 0);
+  const firstBudget = await get(budgetCharts[0].series.budgetSeries$);
+  const elspasedTimeRatio =
+    (currentDate.getTime() - firstBudget[0][0].getTime()) / (firstBudget[1][0].getTime() - firstBudget[0][0].getTime());
+  const currentBudget = elspasedTimeRatio * endBudget;
+  const endExpense = chartData.reduce((total, { lastData }) => total + lastData[1], 0);
+
+  return {
+    currentDate,
+    elspasedTimeRatio,
+
+    currentExpense,
+    currentBudget,
+
+    endExpense,
+    endBudget,
+  };
+});
