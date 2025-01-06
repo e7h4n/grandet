@@ -401,3 +401,57 @@ export const renderCalendarReturns$ = command(async ({ get, set }, elem: HTMLDiv
   );
   chart.setOption(options);
 });
+
+export type Currency = 'USD' | 'CNY';
+export type Amount = [string, Currency];
+
+export interface Position {
+  average_cost: Amount;
+  last_market_value: Amount;
+  last_price: Amount;
+  last_price_change: Amount | [];
+  last_price_change_ratio: string;
+  name: string;
+  position: string;
+  realtime_market_value: Amount;
+  realtime_price: string | Amount;
+  realtime_price_change: Amount | [];
+  realtime_price_change_ratio: string;
+  realtime_ratio: number;
+  today_price_change: Amount | [];
+  today_price_change_ratio: string;
+  unrealized_pnl: Amount | [];
+  unrealized_pnl_ratio: string;
+}
+
+export interface Group {
+  holdings: Position[];
+  last_market_value: Amount;
+  name: string;
+  realtime_market_value: Amount;
+  realtime_ratio: number;
+  target_diff: Amount;
+  target_ratio: number;
+  today_market_value_change: Amount;
+  today_market_value_change_ratio: string;
+  unrealized_pnl: Amount;
+  unrealized_pnl_ratio: string;
+}
+
+export interface HoldingData {
+  groups: Group[];
+  index: number;
+  last_market_value: Amount;
+  realtime_market_value: Amount;
+  today_market_value_change: Amount;
+  today_market_value_change_ratio: string;
+  unrealized_pnl: Amount;
+}
+
+export const holding$ = computed<Promise<HoldingData>>(async (get) => {
+  get(internalRefresh$);
+
+  const headers = await get(sessionHeaders$);
+  const apiHost = get(apiHost$);
+  return fetch(apiHost + '/portfolio/holding', { headers }).then((res) => res.json());
+});

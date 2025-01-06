@@ -8,6 +8,7 @@ import pnl from './pnl.json';
 import irrSummary from './irr_summary.json';
 import current from './current.json';
 import cumulative from './cumulative.json';
+import holding from './holding.json';
 
 export const handlers = [
   http.get('http://127.0.0.1:5000/portfolio/nav_index', () => {
@@ -36,6 +37,9 @@ export const handlers = [
   }),
   http.get('http://127.0.0.1:5000/balance/cumulative', () => {
     return HttpResponse.json(cumulative);
+  }),
+  http.get('http://127.0.0.1:5000/portfolio/holding', () => {
+    return HttpResponse.json(holding);
   }),
   http.get('https://pro-8910668211600497001.frontendapi.corbado.io/v2/session-config', () => {
     return HttpResponse.json({
