@@ -1,22 +1,49 @@
 import { Box, Paper, Typography, LinearProgress } from '@mui/material';
 import { PieChart } from '@mui/x-charts/PieChart';
+import { holding$ } from '../atoms/portfolio';
+import { useLastResolved } from 'ccstate-react';
 
-interface AllocationItem {
-  name: string;
-  value: number;
-  amount: number;
-  dailyChangePercent: number;
-}
-
-const mockAllocations: AllocationItem[] = [
-  { name: 'US Stocks', value: 50.0, amount: 250000, dailyChangePercent: 1.2 },
-  { name: 'International Stocks', value: 30.0, amount: 150000, dailyChangePercent: -0.8 },
-  { name: 'Bonds', value: 20.0, amount: 100000, dailyChangePercent: 0.5 },
-];
-
-const pieChartColors = ['#1976d2', '#2196f3', '#4caf50'];
+const pieChartColors = ['#1976d2', '#2196f3', '#4caf50', '#ff9800', '#f44336', '#9c27b0'];
 
 export function HoldingDistribution() {
+  const holdingData = useLastResolved(holding$);
+  if (!holdingData) return null;
+
+  const totalValue = Number(holdingData.realtime_market_value[0]);
+
+  // 计算每个组的分配数据
+  const allocations = holdingData.groups
+    .filter(
+      (group) =>
+        // 过滤掉现金等价物组（通常包含 USD、CNY 等）
+        !group.holdings.every((h) => ['USD', 'CNY'].includes(h.name)),
+    )
+    .map((group) => {
+      const actualRatio = Number(group.realtime_market_value[0]) / totalValue;
+      const targetRatio = Number(group.target_ratio);
+      // 计算偏离度：实际比例相对于目标比例的偏离程度
+      // 如果实际比例等于目标比例，deviation 为 0
+      // 如果实际比例大于目标比例，deviation 为正数
+      // 如果实际比例小于目标比例，deviation 为负数
+      const deviation = (actualRatio - targetRatio) / targetRatio;
+
+      // 将偏离度映射到进度条的值
+      // deviation 为 0 时，progressValue 为 50
+      // deviation 为 1 (100% 偏离) 时，progressValue 为 100
+      // deviation 为 -1 (-100% 偏离) 时，progressValue 为 0
+      const progressValue = 50 * (1 + deviation);
+
+      return {
+        name: group.name,
+        value: actualRatio * 100,
+        amount: Number(group.realtime_market_value[0]),
+        dailyChangePercent: Number(group.today_market_value_change_ratio) * 100,
+        targetRatio: targetRatio * 100,
+        deviation,
+        progressValue: Math.max(0, Math.min(100, progressValue)), // 确保值在 0-100 之间
+      };
+    });
+
   return (
     <Paper
       elevation={0}
@@ -49,10 +76,10 @@ export function HoldingDistribution() {
           <PieChart
             series={[
               {
-                data: mockAllocations.map((item, index) => ({
+                data: allocations.map((item, index) => ({
                   id: index,
                   value: item.value,
-                  label: `${item.name}\n${item.value}%`,
+                  label: `${item.name}\n${item.value.toFixed(1)}%`,
                   color: pieChartColors[index],
                 })),
                 innerRadius: 80,
@@ -80,7 +107,7 @@ export function HoldingDistribution() {
 
       {/* Allocation List */}
       <Box>
-        {mockAllocations.map((item, index) => (
+        {allocations.map((item, index) => (
           <Box
             key={item.name}
             sx={{
@@ -111,35 +138,55 @@ export function HoldingDistribution() {
                   <Box>
                     <Typography sx={{ fontWeight: 500 }}>{item.name}</Typography>
                     <Typography variant="caption" color="text.secondary">
-                      Allocation: {item.value.toFixed(1)}%
+                      Target: {item.targetRatio.toFixed(1)}%
                     </Typography>
                   </Box>
                 </Box>
                 <Box sx={{ textAlign: 'right' }}>
-                  <Typography sx={{ fontWeight: 500 }}>${item.amount.toLocaleString('en-US')}</Typography>
+                  <Typography sx={{ fontWeight: 500 }}>Current: {item.value.toFixed(1)}%</Typography>
                   <Typography
                     variant="caption"
                     sx={{
-                      color: item.dailyChangePercent >= 0 ? 'success.main' : 'error.main',
+                      color:
+                        Math.abs(item.deviation) < 0.05
+                          ? 'text.secondary'
+                          : item.deviation > 0
+                            ? 'error.main'
+                            : 'warning.main',
                     }}
                   >
-                    {item.dailyChangePercent >= 0 ? '+' : ''}
-                    {item.dailyChangePercent.toFixed(1)}%
+                    Deviation: {item.deviation >= 0 ? '+' : ''}
+                    {(item.deviation * 100).toFixed(1)}%
                   </Typography>
                 </Box>
               </Box>
-              <LinearProgress
-                variant="determinate"
-                value={item.value}
-                sx={{
-                  height: 8,
-                  borderRadius: 1,
-                  backgroundColor: 'rgba(0, 0, 0, 0.04)',
-                  '& .MuiLinearProgress-bar': {
-                    backgroundColor: pieChartColors[index],
-                  },
-                }}
-              />
+              <Box sx={{ position: 'relative' }}>
+                {/* 中间线，表示目标位置 */}
+                <Box
+                  sx={{
+                    position: 'absolute',
+                    left: '50%',
+                    top: 0,
+                    bottom: 0,
+                    width: 2,
+                    backgroundColor: 'rgba(0, 0, 0, 0.1)',
+                    zIndex: 1,
+                  }}
+                />
+                <LinearProgress
+                  variant="determinate"
+                  value={item.progressValue}
+                  sx={{
+                    height: 8,
+                    borderRadius: 1,
+                    backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                    '& .MuiLinearProgress-bar': {
+                      backgroundColor: pieChartColors[index],
+                      transition: 'none',
+                    },
+                  }}
+                />
+              </Box>
             </Box>
           </Box>
         ))}
