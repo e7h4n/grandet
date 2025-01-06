@@ -5,6 +5,35 @@ import { createDebugStore, createStore, Store } from 'ccstate';
 import { StoreProvider } from 'ccstate-react';
 import { Router } from './components/Router';
 import { main$ } from './atoms/main';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+
+const theme = createTheme({
+  typography: {
+    fontFamily: [
+      'Inter',
+      '-apple-system',
+      'BlinkMacSystemFont',
+      '"Segoe UI"',
+      'Roboto',
+      '"Helvetica Neue"',
+      'Arial',
+      'sans-serif',
+    ].join(','),
+    // 可以针对特定变体设置字重
+    h6: {
+      fontWeight: 500,
+    },
+    subtitle1: {
+      fontWeight: 500,
+    },
+    body1: {
+      color: '#111827',
+    },
+    body2: {
+      color: '#111827',
+    },
+  },
+});
 
 async function prepare() {
   if (import.meta.env.DEV) {
@@ -33,9 +62,11 @@ void prepare().then(() => {
 
   createRoot(document.getElementById('root')!).render(
     <StrictMode>
-      <StoreProvider value={store}>
-        <Router />
-      </StoreProvider>
+      <ThemeProvider theme={theme}>
+        <StoreProvider value={store}>
+          <Router />
+        </StoreProvider>
+      </ThemeProvider>
     </StrictMode>,
   );
 });

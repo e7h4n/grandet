@@ -14,5 +14,15 @@ export const LoginPage = () => {
     return () => ctrl.abort();
   }, [showAuthPage]);
 
-  return <div ref={elemRef} />;
+  return (
+    <div
+      ref={elemRef}
+      style={{
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+      }}
+    />
+  );
 };

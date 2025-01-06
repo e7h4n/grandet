@@ -21,6 +21,7 @@ import RefreshIcon from '@mui/icons-material/Refresh';
 const MENU_ITEMS = [
   { path: '/', label: 'Dashboard' },
   { path: '/budget', label: 'Budget' },
+  { path: '/holdings', label: 'Holdings' },
   { path: '/cash_flows', label: 'Cash Flows' },
   { path: '/investments', label: 'Investments' },
   { path: '/irr', label: 'IRR' },
