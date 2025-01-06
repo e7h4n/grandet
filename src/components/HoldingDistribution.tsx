@@ -1,13 +1,158 @@
-import { Box, Paper, Typography, LinearProgress } from '@mui/material';
+import { Box, Paper, Typography, LinearProgress, Skeleton, Stack, Divider } from '@mui/material';
 import { PieChart } from '@mui/x-charts/PieChart';
 import { holding$ } from '../atoms/portfolio';
 import { useLastResolved } from 'ccstate-react';
+import Grid from '@mui/material/Grid2';
+import CircleIcon from '@mui/icons-material/Circle';
 
 const pieChartColors = ['#1976d2', '#2196f3', '#4caf50', '#ff9800', '#f44336', '#9c27b0'];
 
+function HoldingDistributionSkeleton() {
+  return (
+    <Stack>
+      {/* 饼图骨架屏 */}
+      <Grid container justifyContent="center">
+        <Grid size={{ xs: 12 }} container justifyContent="center">
+          <Skeleton variant="circular" width={240} height={240} />
+        </Grid>
+      </Grid>
+      <Divider />
+
+      {/* 分配列表骨架屏 - 两列布局 */}
+      <Grid container>
+        {[1, 2, 3, 4].map((index) => (
+          <Grid
+            key={index}
+            size={{ xs: 6 }}
+            p={2}
+            sx={{
+              borderBottom: 1,
+              borderColor: 'divider',
+              '&:nth-of-type(odd)': {
+                borderRight: 1,
+                borderColor: 'divider',
+              },
+            }}
+          >
+            <Stack spacing={1}>
+              <Stack direction="row" justifyContent="space-between">
+                <Stack direction="row" spacing={1} alignItems="center">
+                  <Skeleton variant="circular" width={12} height={12} />
+                  <Stack>
+                    <Skeleton variant="text" width={80} height={24} />
+                    <Skeleton variant="text" width={60} height={16} />
+                  </Stack>
+                </Stack>
+                <Stack alignItems="flex-end">
+                  <Skeleton variant="text" width={70} height={24} />
+                  <Skeleton variant="text" width={90} height={16} />
+                </Stack>
+              </Stack>
+              <Skeleton variant="rounded" width="100%" height={8} />
+            </Stack>
+          </Grid>
+        ))}
+      </Grid>
+    </Stack>
+  );
+}
+
+interface Allocation {
+  name: string;
+  value: number;
+  amount: number;
+  dailyChangePercent: number;
+  targetRatio: number;
+  deviation: number;
+  progressValue: number;
+}
+
+function AllocationItem({ item, color }: { item: Allocation; color: string }) {
+  return (
+    <Stack spacing={1.5}>
+      {/* 标题行 */}
+      <Stack direction="row" spacing={1} alignItems="center" width="100%">
+        <CircleIcon sx={{ fontSize: 12, color, flexShrink: 0 }} />
+        <Typography
+          variant="subtitle2"
+          fontWeight={500}
+          noWrap
+          title={item.name}
+          sx={{
+            flexGrow: 1,
+            fontSize: '0.875rem',
+          }}
+        >
+          {item.name}
+        </Typography>
+      </Stack>
+
+      {/* 数据行 */}
+      <Grid container spacing={1}>
+        <Grid size={{ xs: 6 }}>
+          <Stack>
+            <Typography variant="body2" color="text.secondary">
+              Current
+            </Typography>
+            <Typography variant="subtitle2">{item.value.toFixed(1)}%</Typography>
+          </Stack>
+        </Grid>
+        <Grid size={{ xs: 6 }}>
+          <Stack>
+            <Typography variant="body2" color="text.secondary">
+              Target
+            </Typography>
+            <Typography variant="subtitle2">{item.targetRatio.toFixed(1)}%</Typography>
+          </Stack>
+        </Grid>
+      </Grid>
+
+      {/* 偏差值 */}
+      <Typography
+        variant="caption"
+        color={Math.abs(item.deviation) < 0.05 ? 'text.secondary' : item.deviation > 0 ? 'error.main' : 'warning.main'}
+      >
+        Deviation: {item.deviation >= 0 ? '+' : ''}
+        {(item.deviation * 100).toFixed(1)}%
+      </Typography>
+
+      {/* 进度条 */}
+      <Box position="relative">
+        <LinearProgress
+          variant="determinate"
+          value={item.value}
+          sx={{
+            height: 6,
+            borderRadius: 1,
+            bgcolor: 'action.hover',
+            '& .MuiLinearProgress-bar': {
+              bgcolor: color,
+              transition: 'none',
+            },
+          }}
+        />
+      </Box>
+    </Stack>
+  );
+}
+
 export function HoldingDistribution() {
   const holdingData = useLastResolved(holding$);
-  if (!holdingData) return null;
+  if (!holdingData) {
+    return (
+      <Paper elevation={0} sx={{ borderRadius: 2, bgcolor: 'background.paper' }}>
+        <Stack>
+          <Box p={2}>
+            <Typography variant="h6" fontWeight={500}>
+              Portfolio Allocation
+            </Typography>
+          </Box>
+          <Divider />
+          <HoldingDistributionSkeleton />
+        </Stack>
+      </Paper>
+    );
+  }
 
   const totalValue = Number(holdingData.realtime_market_value[0]);
 
@@ -45,152 +190,72 @@ export function HoldingDistribution() {
     });
 
   return (
-    <Paper
-      elevation={0}
-      sx={{
-        borderRadius: 2,
-        backgroundColor: '#fff',
-      }}
-    >
-      <Box
-        sx={{
-          p: 2,
-          borderBottom: '1px solid rgba(0, 0, 0, 0.06)',
-        }}
-      >
-        <Typography variant="h6" sx={{ fontWeight: 500 }}>
-          Portfolio Allocation
-        </Typography>
-      </Box>
-
-      {/* Ring Chart */}
-      <Box
-        sx={{
-          px: 2,
-          display: 'flex',
-          justifyContent: 'center',
-          borderBottom: '1px solid rgba(0, 0, 0, 0.06)',
-        }}
-      >
-        <Box sx={{ width: 300, py: 1 }}>
-          <PieChart
-            series={[
-              {
-                data: allocations.map((item, index) => ({
-                  id: index,
-                  value: item.value,
-                  label: `${item.name}\n${item.value.toFixed(1)}%`,
-                  color: pieChartColors[index],
-                })),
-                innerRadius: 80,
-                outerRadius: 120,
-                paddingAngle: 2,
-                cornerRadius: 4,
-                highlightScope: { faded: 'global', highlighted: 'item' },
-                faded: { innerRadius: 80, additionalRadius: -20, color: 'gray' },
-              },
-            ]}
-            height={300}
-            width={300}
-            margin={{ left: 0, right: 0 }}
-            slotProps={{
-              legend: {
-                direction: 'row',
-                position: { vertical: 'bottom', horizontal: 'middle' },
-                padding: 0,
-                hidden: true,
-              },
-            }}
-          />
+    <Paper elevation={0} sx={{ borderRadius: 2, bgcolor: 'background.paper' }}>
+      <Stack>
+        <Box p={2}>
+          <Typography variant="h6" fontWeight={500}>
+            Portfolio Allocation
+          </Typography>
         </Box>
-      </Box>
+        <Divider />
 
-      {/* Allocation List */}
-      <Box>
-        {allocations.map((item, index) => (
-          <Box
-            key={item.name}
-            sx={{
-              px: 2,
-              '&:not(:last-child)': {
-                borderBottom: '1px solid rgba(0, 0, 0, 0.06)',
-              },
-            }}
-          >
-            <Box sx={{ py: 2 }}>
-              <Box
-                sx={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'flex-start',
-                  mb: 1,
-                }}
-              >
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <Box
-                    sx={{
-                      width: 12,
-                      height: 12,
-                      borderRadius: '50%',
-                      backgroundColor: pieChartColors[index],
-                    }}
-                  />
-                  <Box>
-                    <Typography sx={{ fontWeight: 500 }}>{item.name}</Typography>
-                    <Typography variant="caption" color="text.secondary">
-                      Target: {item.targetRatio.toFixed(1)}%
-                    </Typography>
-                  </Box>
-                </Box>
-                <Box sx={{ textAlign: 'right' }}>
-                  <Typography sx={{ fontWeight: 500 }}>Current: {item.value.toFixed(1)}%</Typography>
-                  <Typography
-                    variant="caption"
-                    sx={{
-                      color:
-                        Math.abs(item.deviation) < 0.05
-                          ? 'text.secondary'
-                          : item.deviation > 0
-                            ? 'error.main'
-                            : 'warning.main',
-                    }}
-                  >
-                    Deviation: {item.deviation >= 0 ? '+' : ''}
-                    {(item.deviation * 100).toFixed(1)}%
-                  </Typography>
-                </Box>
-              </Box>
-              <Box sx={{ position: 'relative' }}>
-                {/* 中间线，表示目标位置 */}
-                <Box
-                  sx={{
-                    position: 'absolute',
-                    left: '50%',
-                    top: 0,
-                    bottom: 0,
-                    width: 2,
-                    backgroundColor: 'rgba(0, 0, 0, 0.1)',
-                    zIndex: 1,
-                  }}
-                />
-                <LinearProgress
-                  variant="determinate"
-                  value={item.progressValue}
-                  sx={{
-                    height: 8,
-                    borderRadius: 1,
-                    backgroundColor: 'rgba(0, 0, 0, 0.04)',
-                    '& .MuiLinearProgress-bar': {
-                      backgroundColor: pieChartColors[index],
-                      transition: 'none',
-                    },
-                  }}
-                />
-              </Box>
-            </Box>
-          </Box>
-        ))}
-      </Box>
+        {/* Ring Chart */}
+        <Grid container justifyContent="center">
+          <Grid size={{ xs: 12 }} container justifyContent="center">
+            <PieChart
+              series={[
+                {
+                  data: allocations.map((item, index) => ({
+                    id: index,
+                    value: item.value,
+                    label: `${item.name}\n${item.value.toFixed(1)}%`,
+                    color: pieChartColors[index],
+                  })),
+                  innerRadius: 80,
+                  outerRadius: 120,
+                  paddingAngle: 2,
+                  cornerRadius: 4,
+                  highlightScope: { faded: 'global', highlighted: 'item' },
+                  faded: { innerRadius: 80, additionalRadius: -20, color: 'gray' },
+                },
+              ]}
+              height={300}
+              width={300}
+              margin={{ left: 0, right: 0 }}
+              slotProps={{
+                legend: {
+                  direction: 'row',
+                  position: { vertical: 'bottom', horizontal: 'middle' },
+                  padding: 0,
+                  hidden: true,
+                },
+              }}
+            />
+          </Grid>
+        </Grid>
+        <Divider />
+
+        {/* Allocation List - 两列布局 */}
+        <Grid container>
+          {allocations.map((item, index) => (
+            <Grid
+              key={item.name}
+              size={{ xs: 6 }}
+              p={2}
+              sx={{
+                borderBottom: 1,
+                borderColor: 'divider',
+                '&:nth-of-type(odd)': {
+                  borderRight: 1,
+                  borderColor: 'divider',
+                },
+              }}
+            >
+              <AllocationItem item={item} color={pieChartColors[index]} />
+            </Grid>
+          ))}
+        </Grid>
+      </Stack>
     </Paper>
   );
 }

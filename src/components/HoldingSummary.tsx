@@ -1,4 +1,4 @@
-import { Box, Paper, Typography } from '@mui/material';
+import { Box, Paper, Skeleton, Typography } from '@mui/material';
 import Grid from '@mui/material/Grid2';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
@@ -6,9 +6,32 @@ import BalanceIcon from '@mui/icons-material/Balance';
 import { useLastResolved } from 'ccstate-react';
 import { holding$ } from '../atoms/portfolio';
 
+function SummarySkeleton() {
+  return (
+    <Grid size={{ xs: 12, md: 4 }}>
+      <Paper elevation={0} sx={{ borderRadius: 2, backgroundColor: '#fff', p: 3 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+          <Skeleton variant="circular" width={24} height={24} sx={{ mr: 1 }} />
+          <Skeleton width={140} height={20} />
+        </Box>
+        <Skeleton variant="rectangular" width={200} height={40} sx={{ mb: 1 }} />
+        <Skeleton width={160} height={16} />
+      </Paper>
+    </Grid>
+  );
+}
+
 export function HoldingSummary() {
   const holdingData = useLastResolved(holding$);
-  if (!holdingData) return null;
+  if (!holdingData) {
+    return (
+      <Grid container spacing={3}>
+        <SummarySkeleton />
+        <SummarySkeleton />
+        <SummarySkeleton />
+      </Grid>
+    );
+  }
 
   // Calculate max rebalancing deviation
   const maxDeviation = Math.max(
