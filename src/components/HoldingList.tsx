@@ -131,7 +131,7 @@ export function HoldingList() {
                   <Box>
                     <Typography sx={{ fontWeight: 500 }}>{holding.name}</Typography>
                     <Typography variant="body2" color="text.secondary">
-                      {Number(holding.position).toLocaleString('en-US')} shares
+                      {Number(holding.position).toLocaleString('en-US')}
                     </Typography>
                   </Box>
                 </TableCell>
