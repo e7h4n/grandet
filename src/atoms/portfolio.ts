@@ -342,14 +342,11 @@ export const calendarReturnsChartOptions$ = computed(async (get) => {
         barWidth: '30%',
         barGap: '10%',
         itemStyle: {
-          color: (params: { value: number[] }) => {
-            return params.value[1] > 0 ? 'rgba(85,182,109,0.8)' : 'rgba(209,75,75,0.8)';
-          },
+          color: '#55b66d',
         },
         label: {
           show: true,
           position: 'top',
-          distance: 6,
           color: '#666',
           fontSize: 12,
           formatter: (params: { data: number[] }) => {
@@ -364,14 +361,11 @@ export const calendarReturnsChartOptions$ = computed(async (get) => {
         barWidth: '30%',
         barGap: '10%',
         itemStyle: {
-          color: (params: { value: number[] }) => {
-            return params.value[1] > 0 ? 'rgba(85,182,109,0.6)' : 'rgba(209,75,75,0.6)';
-          },
+          color: '#2196f3',
         },
         label: {
           show: true,
           position: 'top',
-          distance: 6,
           color: '#666',
           fontSize: 12,
           formatter: (params: { data: number[] }) => {
@@ -518,13 +512,9 @@ export const navCalendarReturns$ = computed(async (get) => {
     data.sort((a, b) => a[0].getTime() - b[0].getTime());
     const startValue = data[0][1];
     const endValue = data[data.length - 1][1];
-    const startDate = data[0][0];
-    const endDate = data[data.length - 1][0];
     const rawReturn = endValue / startValue - 1;
-    const daysInYear = (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24);
-    const annualizedReturn = daysInYear < 360 ? Math.pow(1 + rawReturn, 365 / daysInYear) - 1 : rawReturn;
     const returnDate = new Date(year, 11, 31);
-    returns.push([returnDate, annualizedReturn]);
+    returns.push([returnDate, rawReturn]);
   });
 
   return returns.sort((a, b) => a[0].getTime() - b[0].getTime());
