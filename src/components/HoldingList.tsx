@@ -68,16 +68,10 @@ export function HoldingList() {
               <TableRow sx={{ backgroundColor: 'rgba(0, 0, 0, 0.02)' }}>
                 <TableCell sx={{ color: 'text.secondary', fontSize: '0.875rem', pl: 3 }}>NAME</TableCell>
                 <TableCell align="right" sx={{ color: 'text.secondary', fontSize: '0.875rem' }}>
-                  CURRENT PRICE
-                </TableCell>
-                <TableCell align="right" sx={{ color: 'text.secondary', fontSize: '0.875rem' }}>
-                  QUANTITY
-                </TableCell>
-                <TableCell align="right" sx={{ color: 'text.secondary', fontSize: '0.875rem' }}>
-                  VALUE
+                  PRICE
                 </TableCell>
                 <TableCell align="right" sx={{ color: 'text.secondary', fontSize: '0.875rem', pr: 3 }}>
-                  DAILY CHANGE
+                  VALUE
                 </TableCell>
               </TableRow>
             </TableHead>
@@ -117,16 +111,10 @@ export function HoldingList() {
             <TableRow sx={{ backgroundColor: 'rgba(0, 0, 0, 0.02)' }}>
               <TableCell sx={{ color: 'text.secondary', fontSize: '0.875rem', pl: 3 }}>NAME</TableCell>
               <TableCell align="right" sx={{ color: 'text.secondary', fontSize: '0.875rem' }}>
-                CURRENT PRICE
-              </TableCell>
-              <TableCell align="right" sx={{ color: 'text.secondary', fontSize: '0.875rem' }}>
-                QUANTITY
-              </TableCell>
-              <TableCell align="right" sx={{ color: 'text.secondary', fontSize: '0.875rem' }}>
-                VALUE
+                PRICE
               </TableCell>
               <TableCell align="right" sx={{ color: 'text.secondary', fontSize: '0.875rem', pr: 3 }}>
-                DAILY CHANGE
+                VALUE
               </TableCell>
             </TableRow>
           </TableHead>
@@ -142,36 +130,50 @@ export function HoldingList() {
                 <TableCell sx={{ pl: 3 }}>
                   <Box>
                     <Typography sx={{ fontWeight: 500 }}>{holding.name}</Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      {Number(holding.position).toLocaleString('en-US')} shares
+                    </Typography>
                   </Box>
                 </TableCell>
                 <TableCell align="right">
-                  $
-                  {Number(holding.realtime_price[0]).toLocaleString('en-US', {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2,
-                  })}
-                </TableCell>
-                <TableCell align="right">{Number(holding.position).toLocaleString('en-US')}</TableCell>
-                <TableCell align="right">
-                  $
-                  {Number(holding.realtime_market_value[0]).toLocaleString('en-US', {
-                    minimumFractionDigits: 0,
-                  })}
+                  <Typography>
+                    $
+                    {Number(holding.realtime_price[0]).toLocaleString('en-US', {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    $
+                    {Number(holding.average_cost[0]).toLocaleString('en-US', {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })}
+                  </Typography>
                 </TableCell>
                 <TableCell align="right" sx={{ pr: 3 }}>
+                  <Typography>
+                    $
+                    {Number(holding.realtime_market_value[0]).toLocaleString('en-US', {
+                      minimumFractionDigits: 0,
+                    })}
+                  </Typography>
                   <Box
                     sx={{
                       display: 'inline-flex',
                       alignItems: 'center',
+                      justifyContent: 'flex-end',
                       color: Number(holding.today_price_change_ratio) >= 0 ? 'success.main' : 'error.main',
                     }}
                   >
                     {Number(holding.today_price_change_ratio) >= 0 ? (
-                      <ArrowDropUpIcon sx={{ fontSize: '1.5rem' }} />
+                      <ArrowDropUpIcon sx={{ fontSize: '1.25rem' }} />
                     ) : (
-                      <ArrowDropDownIcon sx={{ fontSize: '1.5rem' }} />
+                      <ArrowDropDownIcon sx={{ fontSize: '1.25rem' }} />
                     )}
-                    {Math.abs(Number(holding.today_price_change_ratio) * 100).toFixed(2)}%
+                    <Typography variant="body2">
+                      {Math.abs(Number(holding.today_price_change_ratio) * 100).toFixed(2)}%
+                    </Typography>
                   </Box>
                 </TableCell>
               </TableRow>
