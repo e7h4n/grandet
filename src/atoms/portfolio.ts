@@ -91,7 +91,7 @@ export const pnl$ = computed(async (get) => {
   };
 });
 
-export const calendarReturns$ = computed(async (get) => {
+export const calendarReturns$ = computed<Promise<[Date, number][][]>>(async (get) => {
   get(internalRefresh$);
 
   const headers = await get(sessionHeaders$);
@@ -251,18 +251,38 @@ export const navIndexChartOptions$ = computed(async (get) => {
 });
 
 export const calendarReturnsChartOptions$ = computed(async (get) => {
-  const data = await get(calendarReturns$);
+  const mwrData = await get(calendarReturns$);
+  const navData = await get(navCalendarReturns$);
+
+  // Convert data to [year, value] format
+  const mwrYearData = mwrData[0].map(([date, value]) => {
+    const adjustedDate = new Date(date);
+    adjustedDate.setDate(adjustedDate.getDate() - 1);
+    return [adjustedDate.getFullYear(), value];
+  });
+  const navYearData = navData.map(([date, value]) => {
+    const adjustedDate = new Date(date);
+    adjustedDate.setDate(adjustedDate.getDate() - 1);
+    return [adjustedDate.getFullYear(), value];
+  });
+
   return {
     backgroundColor: '#fff',
     textStyle: {
       fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
     },
+    legend: {
+      data: ['MWR', 'NAV'],
+      top: 0,
+      right: 0,
+      textStyle: {
+        color: '#666',
+        fontSize: 12,
+      },
+    },
     xAxis: {
       type: 'category',
       axisLabel: {
-        formatter: (value: string) => {
-          return new Date(Date.parse(value) - 86400000).getFullYear();
-        },
         fontSize: 12,
         color: '#666',
       },
@@ -307,22 +327,45 @@ export const calendarReturnsChartOptions$ = computed(async (get) => {
         color: '#333',
         fontSize: 13,
       },
-      formatter: function (params: { data: [Date, number] }[]) {
-        const d = new Date(params[0].data[0].getTime() - 24 * 60 * 60 * 1000);
+      formatter: function (params: { seriesName: string; data: [number, number] }[]) {
         return `<div style="padding: 3px;">
-          <div style="font-size: 14px;font-weight:500;margin-bottom:4px">${d.getFullYear()}</div>
-          <div style="font-size: 13px;">IRR: ${(params[0].data[1] * 100).toFixed(1)}%</div>
+          <div style="font-size: 14px;font-weight:500;margin-bottom:4px">${params[0].data[0]}</div>
+          ${params.map((param) => `<div style="font-size: 13px;">${param.seriesName}: ${(param.data[1] * 100).toFixed(1)}%</div>`).join('')}
         </div>`;
       },
     },
     series: [
       {
+        name: 'MWR',
         type: 'bar',
-        data: data[0],
-        barWidth: '50%',
+        data: mwrYearData,
+        barWidth: '30%',
+        barGap: '10%',
         itemStyle: {
           color: (params: { value: number[] }) => {
             return params.value[1] > 0 ? 'rgba(85,182,109,0.8)' : 'rgba(209,75,75,0.8)';
+          },
+        },
+        label: {
+          show: true,
+          position: 'top',
+          distance: 6,
+          color: '#666',
+          fontSize: 12,
+          formatter: (params: { data: number[] }) => {
+            return (params.data[1] * 100).toFixed(1) + '%';
+          },
+        },
+      },
+      {
+        name: 'NAV',
+        type: 'bar',
+        data: navYearData,
+        barWidth: '30%',
+        barGap: '10%',
+        itemStyle: {
+          color: (params: { value: number[] }) => {
+            return params.value[1] > 0 ? 'rgba(85,182,109,0.6)' : 'rgba(209,75,75,0.6)';
           },
         },
         label: {
@@ -340,7 +383,7 @@ export const calendarReturnsChartOptions$ = computed(async (get) => {
     grid: {
       left: 0,
       right: 0,
-      top: 5,
+      top: 30,
       bottom: 5,
       containLabel: true,
     },
@@ -454,4 +497,35 @@ export const holding$ = computed<Promise<HoldingData>>(async (get) => {
   const headers = await get(sessionHeaders$);
   const apiHost = get(apiHost$);
   return fetch(apiHost + '/portfolio/holding', { headers }).then((res) => res.json());
+});
+
+export const navCalendarReturns$ = computed(async (get) => {
+  const nav_index = await get(navIndex$);
+
+  // Group data by year
+  const yearData: Map<number, [Date, number][]> = new Map();
+  nav_index.forEach(([date, value]: [Date, number]) => {
+    const year = date.getFullYear();
+    if (!yearData.has(year)) {
+      yearData.set(year, []);
+    }
+    yearData.get(year)!.push([date, value]);
+  });
+
+  // Calculate annual returns
+  const returns: [Date, number][] = [];
+  yearData.forEach((data, year) => {
+    data.sort((a, b) => a[0].getTime() - b[0].getTime());
+    const startValue = data[0][1];
+    const endValue = data[data.length - 1][1];
+    const startDate = data[0][0];
+    const endDate = data[data.length - 1][0];
+    const rawReturn = endValue / startValue - 1;
+    const daysInYear = (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24);
+    const annualizedReturn = daysInYear < 360 ? Math.pow(1 + rawReturn, 365 / daysInYear) - 1 : rawReturn;
+    const returnDate = new Date(year, 11, 31);
+    returns.push([returnDate, annualizedReturn]);
+  });
+
+  return returns.sort((a, b) => a[0].getTime() - b[0].getTime());
 });

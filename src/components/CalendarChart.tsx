@@ -18,7 +18,7 @@ export default function CalendarChart(props: HTMLAttributes<HTMLDivElement>) {
   return (
     <>
       <Typography variant="h5" gutterBottom>
-        IRR
+        Calendar Returns
       </Typography>
       {data_.state === 'hasData' ? (
         <div {...props} ref={elemRef} />
