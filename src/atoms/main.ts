@@ -8,7 +8,6 @@ import { authed$ } from './auth';
 import { SplashPage } from '../pages/Splash';
 import CashFlowsPage from '../pages/CashFlows';
 import { InvestmentsPage } from '../pages/Investments';
-import { IrrPage } from '../pages/Irr';
 import { initRoutes$, navigate$ } from './route';
 import { BudgetPage } from '../pages/Budget';
 import HoldingPage from '../pages/Holding';
@@ -53,14 +52,6 @@ export const main$ = command(({ set }, signal: AbortSignal) => {
           if (!set(authGuard$, signal)) return;
 
           set(updatePage$, createElement(InvestmentsPage));
-        }),
-      },
-      {
-        path: '/irr',
-        setup: command(async ({ set }) => {
-          if (!set(authGuard$, signal)) return;
-
-          set(updatePage$, createElement(IrrPage));
         }),
       },
       {
