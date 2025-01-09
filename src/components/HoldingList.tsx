@@ -12,6 +12,7 @@ import {
 } from '@mui/material';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import { holding$ } from '../atoms/portfolio';
 import { useLastResolved } from 'ccstate-react';
 
@@ -39,6 +40,17 @@ function HoldingSkeleton() {
       ))}
     </>
   );
+}
+
+function formatCurrency(amount: number, currency: string) {
+  const symbols: Record<string, string> = {
+    USD: '$',
+    CNY: '¥',
+  };
+  return `${symbols[currency] || ''}${amount.toLocaleString('en-US', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })}`;
 }
 
 export function HoldingList() {
@@ -85,7 +97,9 @@ export function HoldingList() {
   }
 
   // 从所有组中提取持仓数据
-  const allHoldings = holdingData.groups.flatMap((group) => group.holdings);
+  const allHoldings = holdingData.groups
+    .flatMap((group) => group.holdings)
+    .sort((a, b) => Number(b.realtime_market_value[0]) - Number(a.realtime_market_value[0]));
 
   return (
     <Paper
@@ -113,8 +127,18 @@ export function HoldingList() {
               <TableCell align="right" sx={{ color: 'text.secondary', fontSize: '0.875rem' }}>
                 PRICE
               </TableCell>
-              <TableCell align="right" sx={{ color: 'text.secondary', fontSize: '0.875rem', pr: 3 }}>
-                VALUE
+              <TableCell
+                align="right"
+                sx={{
+                  color: 'text.secondary',
+                  fontSize: '0.875rem',
+                  pr: 3,
+                }}
+              >
+                <Box sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.5 }}>
+                  VALUE
+                  <ArrowDownwardIcon sx={{ fontSize: '1rem', opacity: 0.8 }} />
+                </Box>
               </TableCell>
             </TableRow>
           </TableHead>
@@ -137,26 +161,15 @@ export function HoldingList() {
                 </TableCell>
                 <TableCell align="right">
                   <Typography>
-                    $
-                    {Number(holding.realtime_price[0]).toLocaleString('en-US', {
-                      minimumFractionDigits: 2,
-                      maximumFractionDigits: 2,
-                    })}
+                    {formatCurrency(Number(holding.realtime_price[0]), holding.realtime_price[1])}
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
-                    $
-                    {Number(holding.average_cost[0]).toLocaleString('en-US', {
-                      minimumFractionDigits: 2,
-                      maximumFractionDigits: 2,
-                    })}
+                    {formatCurrency(Number(holding.average_cost[0]), holding.average_cost[1])}
                   </Typography>
                 </TableCell>
                 <TableCell align="right" sx={{ pr: 3 }}>
                   <Typography>
-                    $
-                    {Number(holding.realtime_market_value[0]).toLocaleString('en-US', {
-                      minimumFractionDigits: 0,
-                    })}
+                    {formatCurrency(Number(holding.realtime_market_value[0]), holding.realtime_market_value[1])}
                   </Typography>
                   <Box
                     sx={{
