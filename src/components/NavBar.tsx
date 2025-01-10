@@ -18,6 +18,7 @@ import {
 import { navigate$ } from '../atoms/route';
 import MenuIcon from '@mui/icons-material/Menu';
 import RefreshIcon from '@mui/icons-material/Refresh';
+import { switchServerSource$, serverSource$ } from '../atoms/api';
 const MENU_ITEMS = [
   { path: '/', label: 'Dashboard' },
   { path: '/budget', label: 'Budget' },
@@ -54,6 +55,8 @@ function UserBox() {
   const updateShowDetailNumber = useSet(setShowDetailNumber$);
   const autoRefresh = useGet(autoRefresh$);
   const updateAutoRefresh = useSet(updateAutoRefresh$);
+  const serverSource = useGet(serverSource$);
+  const switchServerSource = useSet(switchServerSource$);
 
   if (_authed.state !== 'hasData' || _user.state !== 'hasData') {
     return null;
@@ -102,6 +105,17 @@ function UserBox() {
           <FormControlLabel
             control={<Switch checked={autoRefresh} onChange={(_, checked) => updateAutoRefresh(checked)} />}
             label="Auto refresh"
+          />
+        </MenuItem>
+        <MenuItem>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={serverSource === 'local'}
+                onChange={(_, checked) => switchServerSource(checked ? 'local' : 'remote')}
+              />
+            }
+            label="Local server"
           />
         </MenuItem>
         <MenuItem onClick={logout}>

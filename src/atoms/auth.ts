@@ -1,6 +1,7 @@
 import { computed, command, state } from 'ccstate';
 import Corbado from '@corbado/web-js';
 import { navigate$ } from './route';
+import { serverSource$ } from './api';
 
 const reload$ = state(0);
 const corbado$ = computed(async (get) => {
@@ -57,5 +58,8 @@ export const sessionHeaders$ = computed(async (get) => {
   const token = await get(sessionToken$);
   const headers = new Headers();
   headers.append('Authorization', `Bearer ${token}`);
+  if (get(serverSource$) === 'local') {
+    headers.append('X-Debug-User', 'true');
+  }
   return headers;
 });
