@@ -69,9 +69,25 @@ export const investments$ = computed(async (get) => {
 
   const headers = await get(sessionHeaders$);
   const apiHost = get(apiHost$);
-  return fetch(apiHost + '/portfolio/investments' + window.location.search, {
+  const resp = (await fetch(apiHost + '/portfolio/investments' + window.location.search, {
     headers,
-  }).then((res) => res.json());
+  }).then((res) => res.json())) as {
+    profitable: { name: string; pnl: string; currency: string }[];
+    unprofitable: { name: string; pnl: string; currency: string }[];
+  };
+
+  return {
+    profitable: resp.profitable.map((i) => ({
+      ...i,
+      pnl: parseFloat(i.pnl),
+      currency: i.currency,
+    })),
+    unprofitable: resp.unprofitable.map((i) => ({
+      ...i,
+      pnl: parseFloat(i.pnl),
+      currency: i.currency,
+    })),
+  };
 });
 
 export const pnl$ = computed(async (get) => {
