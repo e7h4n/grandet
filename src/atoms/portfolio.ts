@@ -139,6 +139,22 @@ export const irrSummary$ = computed(async (get) => {
   }).then((res) => res.json());
 });
 
+export const shortAssets$ = computed(async (get) => {
+  get(internalRefresh$);
+
+  const headers = await get(sessionHeaders$);
+  const apiHost = get(apiHost$);
+  return fetch(apiHost + '/balance/short_assets' + window.location.search, { headers })
+    .then((res) => res.json())
+    .then((data) => {
+      return data.map((d: [string, string]) => {
+        const dateStr = d[0];
+        const numberStr = d[1];
+        return [new Date(dateStr), parseFloat(numberStr)];
+      });
+    });
+});
+
 export const navIndexChartOptions$ = computed(async (get) => {
   const data = await get(navIndex$);
 
