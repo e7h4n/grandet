@@ -7,15 +7,6 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { current$ } from '../atoms/balance';
 
-const formatCurrency = (amount: [string, string]) => {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: amount[1],
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(parseFloat(amount[0]));
-};
-
 function SkeletonCard() {
   return (
     <Grid size={{ xs: 6, md: 2 }}>
