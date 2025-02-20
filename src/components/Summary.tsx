@@ -149,7 +149,7 @@ export default function Summary() {
         'Daily Change',
         parseFloat(holdingData.data.today_market_value_change[0]).toFixed(2),
         parseFloat(holdingData.data.today_market_value_change[0]) > 0,
-        'Realized profit and loss',
+        'Today investment change',
       )}
     </Grid>
   );
