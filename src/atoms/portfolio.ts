@@ -18,7 +18,7 @@ export const navIndex$ = computed(async (get) => {
   const data = await resp.json();
   return data.map(([dateStr, indexStr]: [string, string]) => {
     return [new Date(dateStr), parseFloat(indexStr)];
-  });
+  }) as [Date, number][];
 });
 
 export const cashFlows = computed<
@@ -136,7 +136,14 @@ export const irrSummary$ = computed(async (get) => {
   const apiHost = get(apiHost$);
   return fetch(apiHost + '/portfolio/irr_summary' + window.location.search, {
     headers,
-  }).then((res) => res.json());
+  }).then((res) => res.json()) as Promise<{
+    div_returns: number;
+    first_date: string;
+    last_date: string;
+    target_currency: string;
+    total_returns: number;
+    years: number;
+  }>;
 });
 
 export const shortAssets$ = computed(async (get) => {

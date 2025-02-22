@@ -1,9 +1,8 @@
 import { HTMLAttributes } from 'react';
-import { useGet, useLastLoadable } from 'ccstate-react';
+import { useLastLoadable } from 'ccstate-react';
 import { investments$ } from '../atoms/portfolio';
 import Grid from '@mui/material/Grid2';
 import { Skeleton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
-import { showDetailNumber$ } from '../atoms/preference';
 
 interface Investment {
   currency: string;
@@ -17,8 +16,6 @@ function investmentName(name: string) {
 }
 
 function InvestmentList(props: HTMLAttributes<HTMLDivElement> & { investments: Investment[] }) {
-  const showDetailNumber = useGet(showDetailNumber$);
-
   return (
     <TableContainer {...props}>
       <Table>
@@ -36,12 +33,10 @@ function InvestmentList(props: HTMLAttributes<HTMLDivElement> & { investments: I
                 <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
                   <div style={{ flex: 1 }}>{i.currency}</div>
                   <div>
-                    {showDetailNumber
-                      ? i.pnl.toLocaleString(undefined, {
-                          maximumFractionDigits: 2,
-                          minimumFractionDigits: 2,
-                        })
-                      : '***'}
+                    {i.pnl.toLocaleString(undefined, {
+                      maximumFractionDigits: 2,
+                      minimumFractionDigits: 2,
+                    })}
                   </div>
                 </div>
               </TableCell>

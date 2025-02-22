@@ -18,7 +18,7 @@ export const current$ = computed(async (get) => {
   return [new Date(data[0]), parseFloat(data[1])];
 });
 
-export const short_assets$ = computed(async (get) => {
+export const shortAssets$ = computed(async (get) => {
   get(internalRefresh$);
 
   const headers = await get(sessionHeaders$);

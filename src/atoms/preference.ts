@@ -7,20 +7,6 @@ import { refresh$ as budgetRefresh$ } from './budget';
 
 const internalRefresh$ = state(0);
 
-export const showDetailNumber$ = computed((get) => {
-  get(internalRefresh$);
-  return localStorage.getItem('showDetailNumber') === 'true';
-});
-
-export const setShowDetailNumber$ = command(({ set }, status: boolean) => {
-  if (status) {
-    localStorage.setItem('showDetailNumber', 'true');
-  } else {
-    localStorage.removeItem('showDetailNumber');
-  }
-  set(internalRefresh$, (x) => x + 1);
-});
-
 export const autoRefresh$ = computed((get) => {
   get(internalRefresh$);
   return localStorage.getItem('autoRefresh') === 'true';

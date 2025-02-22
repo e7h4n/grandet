@@ -8,13 +8,7 @@ import { useGet, useLastLoadable, useSet } from 'ccstate-react';
 import { authed$, logout$, user$ } from '../atoms/auth';
 import { Avatar, Button, FormControlLabel, Menu, MenuItem, Switch, Tooltip } from '@mui/material';
 import React, { HTMLAttributes } from 'react';
-import {
-  autoRefresh$,
-  refresh$,
-  setShowDetailNumber$,
-  showDetailNumber$,
-  updateAutoRefresh$,
-} from '../atoms/preference';
+import { autoRefresh$, refresh$, updateAutoRefresh$ } from '../atoms/preference';
 import { navigate$ } from '../atoms/route';
 import MenuIcon from '@mui/icons-material/Menu';
 import RefreshIcon from '@mui/icons-material/Refresh';
@@ -51,8 +45,6 @@ function UserBox() {
   const logout = useSet(logout$);
   const _user = useLastLoadable(user$);
   const _authed = useLastLoadable(authed$);
-  const showDetailNumber = useGet(showDetailNumber$);
-  const updateShowDetailNumber = useSet(setShowDetailNumber$);
   const autoRefresh = useGet(autoRefresh$);
   const updateAutoRefresh = useSet(updateAutoRefresh$);
   const serverSource = useGet(serverSource$);
@@ -87,19 +79,6 @@ function UserBox() {
       >
         <MenuItem disabled>
           <Typography sx={{ textAlign: 'center' }}>{_user.data?.fullName}</Typography>
-        </MenuItem>
-        <MenuItem>
-          <FormControlLabel
-            control={
-              <Switch
-                checked={!showDetailNumber}
-                onChange={(_, checked) => {
-                  updateShowDetailNumber(!checked);
-                }}
-              />
-            }
-            label="Mask details"
-          />
         </MenuItem>
         <MenuItem>
           <FormControlLabel
