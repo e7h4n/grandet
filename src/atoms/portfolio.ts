@@ -165,6 +165,18 @@ export const shortAssets$ = computed(async (get) => {
 export const navIndexChartOptions$ = computed(async (get) => {
   const data = await get(navIndex$);
 
+  // 查找数据中的时间范围
+  const dates = data.map((item) => item[0].getTime());
+  const minDate = Math.min(...dates);
+  const maxDate = Math.max(...dates);
+
+  // 计算当年1月1日到当前日期的时间范围
+  const startOfYear = new Date(new Date(maxDate).getFullYear(), 0, 1);
+
+  // 计算默认zoom范围的百分比位置
+  const startPercent = ((startOfYear.getTime() - minDate) / (maxDate - minDate)) * 100;
+  const endPercent = 100;
+
   return {
     backgroundColor: '#fff',
     textStyle: {
@@ -278,11 +290,51 @@ export const navIndexChartOptions$ = computed(async (get) => {
         data: [],
       },
     ],
+    dataZoom: [
+      {
+        type: 'slider',
+        show: true,
+        height: 30,
+        bottom: 10,
+        start: Math.max(0, Math.min(startPercent, 100)),
+        end: endPercent,
+        borderColor: '#ddd',
+        handleSize: '80%',
+        handleIcon:
+          'M10.7,11.9v-1.3H9.3v1.3c-4.9,0.3-8.8,4.4-8.8,9.4c0,5,3.9,9.1,8.8,9.4v1.3h1.3v-1.3c4.9-0.3,8.8-4.4,8.8-9.4C19.5,16.3,15.6,12.2,10.7,11.9z M13.3,24.4H6.7V23h6.6V24.4z M13.3,19.6H6.7v-1.4h6.6V19.6z',
+        handleStyle: {
+          color: '#fff',
+          shadowBlur: 3,
+          shadowColor: 'rgba(0, 0, 0, 0.2)',
+          shadowOffsetX: 1,
+          shadowOffsetY: 1,
+        },
+        textStyle: {
+          color: '#666',
+        },
+        fillerColor: 'rgba(33, 150, 243, 0.1)',
+        dataBackground: {
+          lineStyle: {
+            color: '#2196f3',
+            opacity: 0.3,
+          },
+          areaStyle: {
+            color: '#2196f3',
+            opacity: 0.1,
+          },
+        },
+      },
+      {
+        type: 'inside',
+        zoomOnMouseWheel: 'shift',
+        moveOnMouseWheel: true,
+      },
+    ],
     grid: {
       left: 0,
       right: 0,
       top: 5,
-      bottom: 5,
+      bottom: 45, // 增加底部空间，为dataZoom留出位置
       containLabel: true,
     },
     animation: false,
